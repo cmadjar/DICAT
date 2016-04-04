@@ -7,7 +7,7 @@ class VisitSetup():
     """
     The VisitSetup() class is used to define a study (or project) in terms of sequence of visits and also serves as a
     base class for Visit(VisitSetup).  A study (or project) can have as many visits as required. There is no class for
-    study as it is merely a simple dictionnary.
+    study as it is merely a simple dictionary.
 
     Code example:  This study contains 3 visits.  Since V0 is the first visit, it doesn't have any values for
                    'previousvisit', 'visitwindow' and ' visitmargin'

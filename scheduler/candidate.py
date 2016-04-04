@@ -28,14 +28,19 @@ class Candidate():
         candidatedb[candidatedata.uid] = candidatedata  #add candidate to dict
         DataManagement.save_candidate_data(candidatedb) #save data to file
     """
-    def __init__(self, firstname, lastname, phone, uid=None, visitset = None, status = None, pscid=None, **kwargs): #TODO *kwarg
-        self.uid = Utilities.generate_uid()
-        self.firstname = firstname
-        self.lastname = lastname
-        self.visitset = visitset
-        self.phone = phone
-        self.status = status
-        self.pscid = pscid
+    def __init__(self,            firstname, lastname,      phone,
+                 middlename=None, uid=None,  visitset=None, status=None,
+                 pscid=None,      **kwargs
+                ): #TODO *kwarg
+        #TODO: modify generate_uid function to create LORIS IDs
+        self.uid        = Utilities.generate_uid()
+        self.firstname  = firstname
+        self.middlename = middlename
+        self.lastname   = lastname
+        self.visitset   = visitset
+        self.phone      = phone
+        self.status     = status
+        self.pscid      = pscid
         #...many other attributes
         if kwargs is not None:
             for key, value in kwargs.iteritems():
