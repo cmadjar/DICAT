@@ -1,5 +1,6 @@
 import lib.datamanagement as DataManagement
 import candidate
+import visit
 
 # Create a new database
 #TODO: create functions to create a new database
@@ -28,12 +29,12 @@ visit_windows_info = [ (1, "V0", 1, None, None),
 #Create list of Candidates and save it
 #TODO: create function to create or modify candidate (candidate.Candidate function)
 #TODO: have option to enter multiple phone numbers
-cand1 = candidate.Candidate('Billy', 'Roberts', '451-784-9856', otherphone='514-874-9658')
-cand2 = candidate.Candidate('Sue', 'Allen', '451-874-9632', 'Elizabeth', None, "Active", "MTL0002")
-cand3 = candidate.Candidate('Alan', 'Parson', '451-874-8965', None, None, "Excluded")
-cand4 = candidate.Candidate('Pierre', 'Tremblay', '547-852-9745', 'Dartagnan')
-cand5 = candidate.Candidate('Alain', 'Jeanson', '245-874-6321')
-cand6 = candidate.Candidate('Marc', 'St-Pierre', '412-897-9874')
+cand1 = candidate.Candidate('Billy',  'Roberts',   '451-784-9856', otherphone='514-874-9658')
+cand2 = candidate.Candidate('Sue',    'Allen',     '451-874-9632', 'Elizabeth', None, "Active", "MTL0002")
+cand3 = candidate.Candidate('Alan',   'Parson',    '451-874-8965', None,        None, "Excluded")
+cand4 = candidate.Candidate('Pierre', 'Tremblay',  '547-852-9745', 'Dartagnan')
+cand5 = candidate.Candidate('Alain',  'Jeanson',   '245-874-6321')
+cand6 = candidate.Candidate('Marc',   'St-Pierre', '412-897-9874')
 candidate_info = [ ( 'MTL0001',       '123456',         cand1.status,
                      cand1.firstname, cand1.middlename, cand1.lastname,
                      cand1.phone
@@ -95,12 +96,8 @@ visitdone = DataManagement.database_selectwhere_table(database,
                                                       (candidate1.candid,)
                                                      )
 # Create a new visit scheduled for candidate
-visitproject   = 'Project1'  #TODO selection from dropdown
+visitproject   = 'Project1'    #TODO selection from dropdown
 visitprojectID = DataManagement.fetch_projectID(database, visitproject)
-#visitlabel     = DataManagement.determine_next_visit_label(database,
-#                                                           visitprojectID,
-#                                                           candidate1.candid
-#                                                          )
 visitlabel     = 'V0'          #TODO selection from droplist
 visitdate      = '2014-12-25'  #TODO add regex controls
 visittime      = '13:15'       #TODO add regex controls
@@ -128,6 +125,10 @@ DataManagement.database_update_table(database,      'session',
                                      query_values
                                     )
 
+#nextvisitlabel = DataManagement.determine_next_visit_label(database,
+#                                                           visitprojectID,
+#                                                           candidate1.candid
+#                                                          )
 
 
 # # visitdata = candidate1.set_visit_date(candidate1.candid, visitlabel,
