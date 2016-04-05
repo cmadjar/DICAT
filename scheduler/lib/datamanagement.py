@@ -94,8 +94,9 @@ def database_selectall_table(database, table):
     :param table: name of the table from which to select data
      :type table: str
 
-    :return rows_list: rows that where returned by the select statement
-     :type rows_list: list
+    :return result_list: list of data dictionary with results of the select
+    statement
+      :type result_list: list
 
     """
 
@@ -112,15 +113,96 @@ def database_selectall_table(database, table):
     c    = conn.cursor()
 
     # Execute the query and get the results in the list rows_list
-    rows_list = []
-    for row in c.execute(selectall_query):
-        rows_list.append(row)
+    c.execute(selectall_query)
+    rows_list = c.fetchall()
+
+    # Initialize the list of results from the select statement
+    # Each row of the list will contain a data dictionary of the results
+    result_list = []
+    # Loop through returned rows
+    for row_idx in range(len(rows_list)):
+        # Loop through columns
+        data_dict = {}  # Initialize data dictionary for the row
+        for col_idx in range(len(c.description)):
+            data_dict[c.description[col_idx][0]] = rows_list[row_idx][col_idx]
+        result_list.append(data_dict)
 
     # Close the connection
     conn.close()
 
     # Return the list of rows
-    return rows_list
+    return result_list
+
+def database_selectwhere_table(database, table, where_close, data):
+    """
+    Function that reads a table of the SQLite database with a where close
+    and returns selected rows.
+
+    :param database: name of the database
+     :type database: str
+    :param table: name of the table from which to select data
+     :type table: str
+    :param where_close: the where statement to be used to select data
+     :type where_close: str
+    :param data: the value of the data to use in the where close
+     :type data: list
+
+    :return result_list: list of data dictionary with results of the select
+    statement
+      :type result_list: list
+
+    """
+
+
+    # Create select query
+    selectwhere_query = """
+        SELECT *
+        FROM
+    """
+    selectwhere_query = selectwhere_query + " " + table + " " + where_close
+
+    # Connect to the database
+    conn = sqlite3.connect(database)
+    c    = conn.cursor()
+
+    # Execute the query and get the results in the list rows_list
+    c.execute(selectwhere_query, data)
+    rows_list = c.fetchall()
+
+    # Initialize the list of results from the select statement
+    # Each row of the list will contain a data dictionary of the results
+    result_list = []
+    # Loop through returned rows
+    for row_idx in range(len(rows_list)):
+        data_dict = {}  # Initialize data dictionary for the row
+        # Loop through columns
+        for col_idx in range(len(c.description)):
+            data_dict[c.description[col_idx][0]] = rows_list[row_idx][col_idx]
+        result_list.append(data_dict)
+
+    # Close the connection
+    conn.close()
+
+    # Return the data dictionary with column names and values
+    return result_list
+
+def database_update_table(database, table, update_fields, where_fields, data):
+
+    # Create update query
+    update_query = "UPDATE "  + table + \
+                    " SET "   + update_fields + \
+                    " WHERE " + where_fields
+
+    # Connect to the database
+    conn = sqlite3.connect(database)
+    c    = conn.cursor()
+
+    # Execute the query and get the results in the list rows_list
+    c.execute(update_query, data)
+
+    # Commit the change and close the connection
+    conn.commit()
+    conn.close()
 
 
 """
@@ -148,10 +230,9 @@ def create_new_database(database):
     # Create query for the visit windows table
     create_visit_windows_table_query = '''
         CREATE TABLE visit_windows
-            (VisitLabel         TEXT    NOT NULL,
-             ProjectID          INTEGER,
-             PreviousVisitLabel TEXT,
-             NextVisitLabel     TEXT,
+            (ProjectID          INTEGER,
+             VisitLabel         TEXT     NOT NULL,
+             VisitRank          INTEGER,
              WindowMinDays      INTEGER,
              WindowMaxDays      INTEGER
             )
@@ -177,16 +258,18 @@ def create_new_database(database):
              VisitLabel    TEXT,
              ProjectID     INTEGER,
              VisitDate     TEXT,
+             VisitTime     TEXT,
              VisitLocation TEXT,
+             VisitWithWhom TEXT,
              VisitStatus   TEXT
             )
     '''
 
     # Create the tables
-    database_execute(database, create_project_table_query, None)
+    database_execute(database, create_project_table_query,       None)
     database_execute(database, create_visit_windows_table_query, None)
-    database_execute(database, create_candidate_table_query, None)
-    database_execute(database, create_session_table_query, None)
+    database_execute(database, create_candidate_table_query,     None)
+    database_execute(database, create_session_table_query,       None)
 
 def save_project_data(database, data):
     """
@@ -225,11 +308,11 @@ def save_visit_windows_data(database, data):
     # Create the insert query
     insert_visit_windows_query = '''
         INSERT INTO visit_windows
-            (ProjectID,      VisitLabel,     PreviousVisitLabel,
-             NextVisitLabel, WindowMinDays,  WindowMaxDays
+            (ProjectID,      VisitLabel,     VisitRank,
+             WindowMinDays,  WindowMaxDays
             )
             VALUES (?, ?, ?,
-                    ?, ?, ?
+                    ?, ?
                    )
     '''
 
@@ -268,6 +351,90 @@ def save_candidate_data(database, data):
         database_executemany(database, insert_candidate_query, data)
     else:
         database_execute(database, insert_candidate_query, data)
+
+def save_visit_data(database, data):
+    """
+    Function that saves visit's information in the SQLite database.
+
+    :param database: name of the database
+     :type database: str
+    :param data: if defined, the data to use to execute the statement
+     :type data: list
+
+    """
+
+    # Create the insert query
+    insert_session_query = '''
+        INSERT INTO session
+            (CandID,        VisitLabel, ProjectID,
+             VisitDate,     VisitTime,  VisitLocation,
+             VisitWithWhom, VisitStatus
+            )
+            VALUES (?, ?, ?,
+                    ?, ?, ?,
+                    ?, ?
+                   )
+    '''
+
+    # Execute insert query with values stored in data
+    if (isinstance(data[0], tuple)):
+        database_executemany(database, insert_session_query, data)
+    else:
+        database_execute(database, insert_session_query, data)
+
+def fetch_projectID(database, projectname):
+    """
+    Function that fetch candidate's information in the candidate table
+    based on the PSCID given as an argument
+
+    :param database: name of the database to connect to
+     :type database: str
+    :param PSCID: PSCID of the candidate
+     :type PSCID: str
+
+    :return candidate_list[0]: dictionary with candidate's information
+      :type candidate_list[0]: dict
+
+    """
+
+    project_list = database_selectwhere_table(database,
+                                              "project",
+                                              "WHERE Name = ?",
+                                              (projectname,)
+                                             )
+
+    # Return the projectID
+
+    return project_list[0]['ProjectID']
+
+def fetch_candidate_info(database, pscid):
+    """
+    Function that fetch candidate's information in the candidate table
+    based on the PSCID given as an argument
+
+    :param database: name of the database to connect to
+     :type database: str
+    :param PSCID: PSCID of the candidate
+     :type PSCID: str
+
+    :return candidate_list[0]: dictionary with candidate's information
+      :type candidate_list[0]: dict
+
+    """
+
+    where_data = (pscid,)
+    candidate_list = database_selectwhere_table(database,
+                                                "candidate",
+                                                "WHERE PSCID = ?",
+                                                where_data
+                                               )
+
+    # Return only the first row which corresponds to the data dictionary of
+    # the candidate's information
+    return candidate_list[0]
+
+
+
 
 
 """ OLD FUNCTION FROM PIERRE-EMMANUEL MORIN

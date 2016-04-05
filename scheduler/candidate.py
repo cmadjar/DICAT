@@ -25,19 +25,22 @@ class Candidate():
     Code example:
         candidatedb = {} #setup a dict to receive the candidates
         candidatedata = candidate.Candidate('Billy', 'Roberts', '451-784-9856', otherphone='514-874-9658') #instanciate one candidate
-        candidatedb[candidatedata.uid] = candidatedata  #add candidate to dict
+        candidatedb[candidatedata.candid] = candidatedata  #add candidate to dict
         DataManagement.save_candidate_data(candidatedb) #save data to file
     """
-    def __init__(self,            firstname, lastname,      phone,
-                 middlename=None, uid=None,  visitset=None, status=None,
-                 pscid=None,      **kwargs
+    #TODO: create a __str__ function to print the candidate
+    def __init__(self,            firstname,    lastname,      phone,
+                 middlename=None, candid=None,  status=None,   pscid=None,
+                 **kwargs
                 ): #TODO *kwarg
-        #TODO: modify generate_uid function to create LORIS IDs
-        self.uid        = Utilities.generate_uid()
+        #TODO: modify generate_uid function to create LORIS CandIDs
+        if (candid):
+            self.candid = candid
+        else:
+            self.candid     = Utilities.generate_uid()
         self.firstname  = firstname
         self.middlename = middlename
         self.lastname   = lastname
-        self.visitset   = visitset
         self.phone      = phone
         self.status     = status
         self.pscid      = pscid
@@ -86,12 +89,13 @@ class Candidate():
             visit_data = visit.Visit(rank, visit_label, previous_visit, visit_window, visit_margin,)
             self.visitset[mainkey] = visit_data
             count += 1
-        
-    def set_visit_date(self, visitlabel, visitdate, visittime, visitwhere, visitwhom):
+
+    def set_visit_date(self, candid, visitlabel, visitproject, visitdate, visittime, visitlocation, visitwithwhom, visitstatus):
         """
         This method update the visit information (according to visitlabel)
         This method will:
-            1-Check if visitset==None. If so, then Candidate.setup_visitset() is called to setup Candidate.visitset
+            1-Check if session table is empty for the candidate. If so, then
+            Candidate.setup_visitset() is called to setup Candidate.visitset
             2-Check if a date is already set for this visitlabel
             3-Set values of Visit.when, 'Visit.where, Visit.whithwhom and Visit.status for current visit
         Usage: Called by GUI methods

@@ -39,13 +39,13 @@ class VisitSetup():
     """
 
     def __init__(self, rank, visitlabel, previousvisit = None, visitwindow = None, visitmargin = None, actions = None, uid=None):
-        self.uid = utilities.generate_uid()
+        self.uid  = utilities.generate_uid()
         self.rank = rank
-        self.visitlabel = visitlabel
+        self.visitlabel    = visitlabel
         self.previousvisit = previousvisit
-        self.visitwindow = visitwindow
-        self.visitmargin = visitmargin
-        self.actions = actions  #not implemented yet!
+        self.visitwindow   = visitwindow
+        self.visitmargin   = visitmargin
+        self.actions       = actions  #not implemented yet!
 
 
 class Visit(VisitSetup):
