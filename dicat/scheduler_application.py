@@ -77,30 +77,30 @@ class UserInterface(Frame):
         self.data_pane.add(self.candidate_pane)
         self.data_pane.add(self.visit_pane)
 
-        ## Plot the button actions in the candidate pane frame
+        ## Plot the button actions in the candidate and calendar pane frames
 
-        # Create a frame that will contain the buttons
-        self.buttonBox = Frame(self.candidate_pane)
-        self.buttonBox.pack(side=TOP, anchor=W)
+        # Create a frame that will contain the candidate buttons
+        self.candButtonBox = Frame(self.candidate_pane)
+        self.candButtonBox.pack(side=TOP, anchor=W)
 
-        # Create a 'new candidate' button to be added to self.buttonBox
+        # Create a 'new candidate' button to be added to self.candButtonBox
         self.buttonNewCandidate = Button(    # new candidate button widget
-            self.buttonBox,
+            self.candButtonBox,
             width=15,
             text=MultiLanguage.candidate_add,
             command=self.add_candidate
         )
         self.labelSearchCandidate = Label(   # search candidate Label widget
-            self.buttonBox,
+            self.candButtonBox,
             width=8,
-            text=MultiLanguage.candidate_search,
+            text=MultiLanguage.search,
             justify=RIGHT,
             anchor=E
         )
         self.textSearchCandValue  = StringVar()
         self.textSearchCandValue.trace('w', self.find_matching_candidates)
         self.entrySearchCandidate = Entry(   # search candidate entry widget
-            self.buttonBox, text=self.textSearchCandValue, width=20,
+            self.candButtonBox, text=self.textSearchCandValue, width=20
         )
         # Draw the buttons
         self.buttonNewCandidate.grid(
@@ -112,6 +112,42 @@ class UserInterface(Frame):
         self.entrySearchCandidate.grid(
             row=0, column=2, padx=(0,0), pady=(0,5), sticky=E+W
         )
+
+        # Create a frame that will contain the visit pane buttons
+        self.calendarButtonBox = Frame(self.visit_pane)
+        self.calendarButtonBox.pack(side=TOP, anchor=W)
+
+        # Create a 'new visit' button to be added to self.calendarButtonBox
+        self.buttonNewVisit = Button(       # new visit button widget
+            self.calendarButtonBox,
+            width=15,
+            text=MultiLanguage.visit_add,
+            #TODO: implement the self.add_visit function
+#            command=self.add_visit
+        )
+        self.labelSearchVisit = Label(      # search visit Label widget
+            self.calendarButtonBox,
+            width=8,
+            text=MultiLanguage.search,
+            justify=RIGHT,
+            anchor=E
+        )
+        self.textSearchVisitValue = StringVar()
+        self.textSearchVisitValue.trace('w', self.find_matching_visits)
+        self.entrySearchVisit = Entry(      # search visit entry widget
+            self.calendarButtonBox, text=self.textSearchVisitValue, width=20
+        )
+        # Draw the buttons
+        self.buttonNewVisit.grid(
+            row=0, column=0, padx=(0,10), pady=(0,5), sticky=E+W
+        )
+        self.labelSearchVisit.grid(
+            row=0, column=1, padx=(5,0), pady=(0,5), sticky=E+W
+        )
+        self.entrySearchVisit.grid(
+            row=0, column=2, padx=(0,0), pady=(0,5), sticky=E+W
+        )
+
 
         ## Create data tables (using Treeview)
 
@@ -143,8 +179,22 @@ class UserInterface(Frame):
          :type args: list
 
         """
+
         pattern = self.textSearchCandValue.get()
         self.cand_table.update_data(pattern)
+
+
+    def find_matching_visits(self, *args):
+        """
+        Updates data table with matching visits.
+
+        :param args:
+         :type args: list
+
+        """
+
+        pattern = self.textSearchCandValue.get()
+        self.visit_table.update_data(pattern)
 
 
     def add_candidate(self):

@@ -21,8 +21,6 @@ if language == "fr":
     #newproject    = u"Créer un nouveau projet"
     #CANDIDATE menu
     candidate_menu   = u"Candidat"
-    candidate_add    = u"Nouveau candidat"
-    candidate_search = u"Trouver candidat"
     candidate_update = u"Mettre à jour"
     candidate_get_id = u"Obtenir l'identifiant d'un candidat"
     candidate_exclude_include_toggle = u"Inclure/Exclure un candidat"
@@ -37,6 +35,10 @@ if language == "fr":
     help_menu     = u"Aide"
     help_get_help = u"Obtenir de l'aide"
     help_about_window = u"A propos de ..."
+    ######################### BUTTON BOXES ###########################
+    candidate_add = u"Nouveau candidat"
+    search    = u"Rechercher"
+    visit_add = u"Nouvelle visite"
     ######################  PROJECT INFO PANE  #######################
     project_info_pane   = u"Projet"
     project_detail_pane = u"Détails du Projet"
@@ -151,8 +153,6 @@ elif language == "en":
     #newproject    = u"New project"
     #CANDIDATE menu
     candidate_menu   = u"Candidate"
-    candidate_add    = u"New candidate"
-    candidate_search = u"Search:"
     candidate_update = u"Update"
     candidate_get_id = u"Get a canditate ID"
     candidate_exclude_include_toggle = u"Include/Exclude a candidate"
@@ -167,6 +167,10 @@ elif language == "en":
     help_menu     = u"Help"
     help_get_help = u"Get some help"
     help_about_window = u"About this..."
+    #########################  BUTTON BOXES  #########################
+    candidate_add = u"New candidate"
+    search    = u"Search:"
+    visit_add = u"New visit"
     ######################  PROJECT INFO PANE  #######################
     project_info_pane   = u"Project Information"
     project_detail_pane = u"Project Details"

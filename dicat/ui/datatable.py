@@ -310,6 +310,7 @@ class VisitList(DataTable):
 
         try:
             # Loop through candidates
+            matching_visit = {}
             for cand_key, value in visit_data.iteritems():
 
                 # Skip the search_event if visitset == None for that candidate
@@ -326,8 +327,20 @@ class VisitList(DataTable):
                         candidate_firstname + ' ' + candidate_lastname
                     )
 
+                    # matching_visit[cand_key]['Identifier'] = candidate_id
+                    # matching_visit[cand_key]['FirstName']  = candidate_firstname
+                    # matching_visit[cand_key]['LastName']   = candidate_lastname
+                    #
+                    #
                     # Loop through all visits for that candidate
                     for visit_key, value in current_visitset.iteritems():
+
+                        # if pattern and not DataManagement.dict_match(
+                        #         pattern, visit_data[cand_key]
+                        # ):
+                        #     continue    # continue to the following visit
+                        #
+                        # matching_visit[cand_key] = visit_data[cand_key]
 
                         if "VisitStatus" in current_visitset[visit_key].keys():
                             # Set visit status and label
