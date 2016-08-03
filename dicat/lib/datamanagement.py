@@ -380,7 +380,29 @@ def dict_match(pattern, data_dict):
     """
 
     for key in data_dict:
-        if re.search(pattern, data_dict[key]):
+        if re.search(pattern, data_dict[key], re.IGNORECASE):
+            return True
+
+    return False
+
+
+def array_match(pattern, data_array):
+    """
+    Function that will return True if the pattern was matching one value of the
+    data array/list (data_array). False otherwise.
+
+    :param pattern:    pattern to be used in the regular expression
+     :type pattern:    str
+    :param data_array: data array to look for matches
+     :type data_array: list
+
+    :return: True if found a match, False otherwise
+     :rtype: bool
+
+    """
+
+    for value in data_array:
+        if re.search(pattern, value, re.IGNORECASE):
             return True
 
     return False

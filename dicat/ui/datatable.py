@@ -310,7 +310,6 @@ class VisitList(DataTable):
 
         try:
             # Loop through candidates
-            matching_visit = {}
             for cand_key, value in visit_data.iteritems():
 
                 # Skip the search_event if visitset == None for that candidate
@@ -327,25 +326,14 @@ class VisitList(DataTable):
                         candidate_firstname + ' ' + candidate_lastname
                     )
 
-                    # matching_visit[cand_key]['Identifier'] = candidate_id
-                    # matching_visit[cand_key]['FirstName']  = candidate_firstname
-                    # matching_visit[cand_key]['LastName']   = candidate_lastname
-                    #
-                    #
                     # Loop through all visits for that candidate
                     for visit_key, value in current_visitset.iteritems():
-
-                        # if pattern and not DataManagement.dict_match(
-                        #         pattern, visit_data[cand_key]
-                        # ):
-                        #     continue    # continue to the following visit
-                        #
-                        # matching_visit[cand_key] = visit_data[cand_key]
 
                         if "VisitStatus" in current_visitset[visit_key].keys():
                             # Set visit status and label
                             status = current_visitset[visit_key]["VisitStatus"]
-                            visit_label = current_visitset[visit_key]["VisitLabel"]
+                            visit_label = \
+                                current_visitset[visit_key]["VisitLabel"]
 
                             # Check at what time the visit has been scheduled
                             field = 'VisitStartWhen'
@@ -366,15 +354,31 @@ class VisitList(DataTable):
 
                             else:
                                 where = current_visitset[visit_key]["VisitWhere"]
+
+                            # Fill in the matching_visit_rows dictionary
+
                             # Check that all values could be found
                             row_values = [
                                 candidate_id, candidate_fullname, visit_label,
                                 when,         where,              status
                             ]
                             row_tags = (status, candidate_id, visit_label)
+
+                            # If pattern, check if found its match in row_values
+                            # array.
+                            # DataManagement.array_match function will return:
+                            #     - True if found a match,
+                            #     - False otherwise
+                            if pattern and not DataManagement.array_match(
+                                    pattern, row_values
+                            ):
+                                continue   # continue to next visit
+
                             self.datatable.insert(
                                 '', 'end', values = row_values, tags = row_tags
                             )
+
+
 
         except Exception as err:
             #TODO deal with exception

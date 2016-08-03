@@ -193,7 +193,7 @@ class UserInterface(Frame):
 
         """
 
-        pattern = self.textSearchCandValue.get()
+        pattern = self.textSearchVisitValue.get()
         self.visit_table.update_data(pattern)
 
 
