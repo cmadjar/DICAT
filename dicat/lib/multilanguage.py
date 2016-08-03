@@ -218,11 +218,11 @@ elif language == "en":
 
     ################  COLUMN HEADER  ##################
     col_candidate  = u"Candidate"
-    col_visitlabel = u"Visit"
-    col_withwhom   = u"Whom"
-    col_when   = u"Date/Time"
-    col_where  = u"Place"
-    col_status = u"Status"
+    col_visitlabel = u"Visit label"
+    col_withwhom   = u"With whom"
+    col_when   = u"Date/Time (YYYY-MM-DD HH:MM)"
+    col_where  = u"Visit location"
+    col_status = u"Visit status"
 
     ####################  STATUS  #####################
     status_active    = u"active"

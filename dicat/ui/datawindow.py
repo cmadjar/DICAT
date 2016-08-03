@@ -272,26 +272,28 @@ class DataWindow(Toplevel):
 
         # Draw the top row (header) widgets
         self.label_visit_label.grid(        # draw visit label widget
-            row=0, column=1, padx=5, pady=5, sticky=N+S+E+W
+            row=0, column=1, padx=10, pady=5, sticky=N+S+E+W
         )
         self.label_visit_when.grid(         # draw visit when widget
-            row=0, column=2, padx=5, pady=5, sticky=N+S+E+W
+            row=0, column=2, padx=10, pady=5, sticky=N+S+E+W
         )
         self.label_visit_where.grid(        # draw visit where widget
-            row=0, column=3, padx=5, pady=5, sticky=N+S+E+W
+            row=0, column=3, padx=10, pady=5, sticky=N+S+E+W
         )
         self.label_visit_withwhom.grid(     # draw visit withwhom widget
-            row=0, column=4, padx=5, pady=5, sticky=N+S+E+W
+            row=0, column=4, padx=10, pady=5, sticky=N+S+E+W
         )
         self.label_visit_status.grid(       # draw visit status widget
-            row=0, column=5, padx=5, pady=5, sticky=N+S+E+W
+            row=0, column=5, padx=10, pady=5, sticky=N+S+E+W
         )
 
         # Sort visit list based on the VisitStartWhen field
         visit_list = DataManagement.sort_candidate_visit_list(visitset)
 
         # Show values on ui
-        row_number=1
+        row_number=0
+        self.text_visit_when_var = []
+        self.label_visit_when    = []
         for visit in visit_list:
 
             # Check if values are set for VisitStartWhen, VisitWhere,
@@ -311,12 +313,19 @@ class DataWindow(Toplevel):
             if "VisitStatus" in visit.keys():
                 visit_status = visit["VisitStatus"]
 
+            # Create and populated the StringVar with values
+            self.text_visit_when_var.append(StringVar())
+            self.text_visit_when_var[row_number].set(visit_when)
+
             # Create the visit row widgets
             label_visit_label = Label(     # visit label widget
                 self.schedule_pane, text=visit["VisitLabel"]
             )
-            label_visit_when  = Label(     # visit when widget
-                self.schedule_pane, text=visit_when
+            self.label_visit_when.append(
+                Entry(     # visit when widget
+                    self.schedule_pane,
+                    textvariable=self.text_visit_when_var[row_number]
+                )
             )
             label_visit_where = Label(     # visit where widget
                 self.schedule_pane, text=visit_where
@@ -327,22 +336,35 @@ class DataWindow(Toplevel):
             label_visit_status = Label(    # visit status widget
                 self.schedule_pane, text=visit_status
             )
+            # Disable edition of Entry widgets
+            self.label_visit_when[row_number].config(state=DISABLED)
+
+            # Create a edit button widget
+            button_visit_edit = Button(
+                self.schedule_pane,
+                text="Edit visit info",
+                width=10,
+                command=lambda row_number=row_number: self.visit_edit_action(row_number)
+            )
 
             # Draw the visit row widget
             label_visit_label.grid(
-                row=row_number+1, column=1, padx=5, pady=5, sticky=N+S+E+W
+                row=row_number+1, column=1, padx=10, pady=5, sticky=N+S+E+W
             )
-            label_visit_when.grid(
-                row=row_number+1, column=2, padx=5, pady=5, sticky=N+S+E+W
+            self.label_visit_when[row_number].grid(
+                row=row_number+1, column=2, padx=10, pady=5, sticky=N+S+E+W
             )
             label_visit_where.grid(
-                row=row_number+1, column=3, padx=5, pady=5, sticky=N+S+E+W
+                row=row_number+1, column=3, padx=10, pady=5, sticky=N+S+E+W
             )
             label_visit_with_whom.grid(
-                row=row_number+1, column=4, padx=5, pady=5, sticky=N+S+E+W
+                row=row_number+1, column=4, padx=10, pady=5, sticky=N+S+E+W
             )
             label_visit_status.grid(
-                row=row_number+1, column=5, padx=5, pady=5, sticky=N+S+E+W
+                row=row_number+1, column=5, padx=10, pady=5, sticky=N+S+E+W
+            )
+            button_visit_edit.grid(
+                row=row_number+1, column=6, padx=10, pady=5, sticky=N+S+E+W
             )
 
             # Increment row_number for the next visit to be displayed
@@ -528,3 +550,8 @@ class DataWindow(Toplevel):
 
         # Save candidate data
         DataManagement.save_candidate_data(cand_data)
+
+
+    def visit_edit_action(self, row_number):
+        print row_number
+        self.label_visit_when[row_number].config(state=NORMAL)
