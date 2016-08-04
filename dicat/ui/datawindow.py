@@ -291,84 +291,142 @@ class DataWindow(Toplevel):
         visit_list = DataManagement.sort_candidate_visit_list(visitset)
 
         # Show values on ui
-        row_number=0
-        self.text_visit_when_var = []
-        self.label_visit_when    = []
+        row_nb = 0   # row number index
+        # Define text variable arrays to be displayed at row_nb
+        self.text_visit_when_var     = []
+        self.text_visit_where_var    = []
+        self.text_visit_status_var   = []
+        self.text_visit_withwhom_var = []
+        # Define text widget arrays to be displayed at row_nb
+        self.text_visit_when     = []
+        self.text_visit_where    = []
+        self.text_visit_status   = []
+        self.text_visit_withwhom = []
+        # Define button widget arrays to be displayed at row_nb
+        self.button_visit_save = []
+        self.button_visit_edit = []
+
+        # Loop through visits
         for visit in visit_list:
 
             # Check if values are set for VisitStartWhen, VisitWhere,
             # VisitWindow & VisitStatus keys. If not, set it to empty string as
             # we need a text to display in the corresponding label widgets.
-            visit_when   = ""
-            visit_where  = ""
-            visit_status = ""
-            visit_with_whom = ""
+            self.text_visit_when_var.append(StringVar())
+            self.text_visit_where_var.append(StringVar())
+            self.text_visit_status_var.append(StringVar())
+            self.text_visit_withwhom_var.append(StringVar())
+
             if "VisitStartWhen" in visit.keys():
                 #TODO: implement automatic range for next visit
-                visit_when = visit["VisitStartWhen"]
+                self.text_visit_when_var[row_nb].set(
+                    visit["VisitStartWhen"]
+                )
+                #visit_when = visit["VisitStartWhen"]
             if "VisitWhere" in visit.keys():
-                visit_where = visit["VisitWhere"]
+                self.text_visit_where_var[row_nb].set(visit["VisitWhere"])
+                #visit_where = visit["VisitWhere"]
             if "VisitWithWhom" in visit.keys():
-                visit_with_whom = visit["VisitWithWhom"]
+                self.text_visit_withwhom_var[row_nb].set(
+                    visit["VisitWithWhom"]
+                )
+                #visit_with_whom = visit["VisitWithWhom"]
             if "VisitStatus" in visit.keys():
-                visit_status = visit["VisitStatus"]
+                self.text_visit_status_var[row_nb].set(visit["VisitStatus"])
+                #visit_status = visit["VisitStatus"]
 
-            # Create and populated the StringVar with values
-            self.text_visit_when_var.append(StringVar())
-            self.text_visit_when_var[row_number].set(visit_when)
+            # # Create and populated the StringVar with values
+            # self.text_visit_when_var.append(StringVar())
+            # self.text_visit_when_var[row_nb].set(visit_when)
 
             # Create the visit row widgets
-            label_visit_label = Label(     # visit label widget
+            label_visit_label = Label(        # visit label widget
                 self.schedule_pane, text=visit["VisitLabel"]
             )
-            self.label_visit_when.append(
-                Entry(     # visit when widget
+            self.text_visit_when.append(      # visit when widget
+                Entry(
                     self.schedule_pane,
-                    textvariable=self.text_visit_when_var[row_number]
+                    textvariable=self.text_visit_when_var[row_nb]
                 )
             )
-            label_visit_where = Label(     # visit where widget
-                self.schedule_pane, text=visit_where
+            self.text_visit_where.append(     # visit where widget
+                Entry(
+                    self.schedule_pane,
+                    textvariable=self.text_visit_where_var[row_nb]
+                )
             )
-            label_visit_with_whom = Label( # visit with whom widget
-                self.schedule_pane, text=visit_with_whom
+            self.text_visit_withwhom.append(  # visit with whom widget
+                Entry(
+                    self.schedule_pane,
+                    text=self.text_visit_withwhom_var[row_nb]
+                )
             )
-            label_visit_status = Label(    # visit status widget
-                self.schedule_pane, text=visit_status
+            status_options = [
+                ' ', 'scheduled', 'confirmed', 'to schedule', 'completed'
+            ]
+            self.text_visit_status.append(    # visit status widget
+                OptionMenu(
+                    self.schedule_pane,
+                    self.text_visit_status_var[row_nb],
+                    self.text_visit_status_var[row_nb].get(),
+                    *status_options
+                )
             )
             # Disable edition of Entry widgets
-            self.label_visit_when[row_number].config(state=DISABLED)
+            self.text_visit_when[row_nb].config(state=DISABLED)
+            self.text_visit_where[row_nb].config(state=DISABLED)
+            self.text_visit_status[row_nb].config(state=DISABLED)
+            self.text_visit_withwhom[row_nb].config(state=DISABLED)
 
-            # Create a edit button widget
-            button_visit_edit = Button(
-                self.schedule_pane,
-                text="Edit visit info",
-                width=10,
-                command=lambda row_number=row_number: self.visit_edit_action(row_number)
+            # Create edit and save button widgets
+            self.button_visit_edit.append(
+                Button(
+                    self.schedule_pane,
+                    text="Edit",
+                    width=5,
+                    command=lambda row_nb=row_nb: self.visit_edit_action(
+                    row_nb
+                    )
+                )
             )
+            self.button_visit_save.append(
+                Button(
+                    self.schedule_pane,
+                    text="Save",
+                    width=5,
+                    command=lambda row_nb=row_nb: self.visit_save_action(
+                        row_nb
+                    )
+                )
+            )
+            # Disable save button
+            self.button_visit_save[row_nb].config(state=DISABLED)
 
             # Draw the visit row widget
             label_visit_label.grid(
-                row=row_number+1, column=1, padx=10, pady=5, sticky=N+S+E+W
+                row=row_nb+1, column=1, padx=10, pady=5, sticky=N+S+E+W
             )
-            self.label_visit_when[row_number].grid(
-                row=row_number+1, column=2, padx=10, pady=5, sticky=N+S+E+W
+            self.text_visit_when[row_nb].grid(
+                row=row_nb+1, column=2, padx=10, pady=5, sticky=N+S+E+W
             )
-            label_visit_where.grid(
-                row=row_number+1, column=3, padx=10, pady=5, sticky=N+S+E+W
+            self.text_visit_where[row_nb].grid(
+                row=row_nb+1, column=3, padx=10, pady=5, sticky=N+S+E+W
             )
-            label_visit_with_whom.grid(
-                row=row_number+1, column=4, padx=10, pady=5, sticky=N+S+E+W
+            self.text_visit_withwhom[row_nb].grid(
+                row=row_nb+1, column=4, padx=10, pady=5, sticky=N+S+E+W
             )
-            label_visit_status.grid(
-                row=row_number+1, column=5, padx=10, pady=5, sticky=N+S+E+W
+            self.text_visit_status[row_nb].grid(
+                row=row_nb+1, column=5, padx=10, pady=5, sticky=N+S+E+W
             )
-            button_visit_edit.grid(
-                row=row_number+1, column=6, padx=10, pady=5, sticky=N+S+E+W
+            self.button_visit_edit[row_nb].grid(
+                row=row_nb+1, column=6, padx=5, pady=5, sticky=N+S+E+W
+            )
+            self.button_visit_save[row_nb].grid(
+                row=row_nb+1, column=7, padx=5, pady=5, sticky=N+S+E+W
             )
 
-            # Increment row_number for the next visit to be displayed
-            row_number += 1
+            # Increment row_nb for the next visit to be displayed
+            row_nb += 1
 
 
     def load_data(self):
@@ -553,5 +611,19 @@ class DataWindow(Toplevel):
 
 
     def visit_edit_action(self, row_number):
-        print row_number
-        self.label_visit_when[row_number].config(state=NORMAL)
+        self.text_visit_when[row_number].config(state=NORMAL)
+        self.text_visit_where[row_number].config(state=NORMAL)
+        self.text_visit_status[row_number].config(state=NORMAL)
+        self.text_visit_withwhom[row_number].config(state=NORMAL)
+        self.button_visit_save[row_number].config(state=NORMAL)
+        self.button_visit_edit[row_number].config(state=DISABLED)
+
+
+    def visit_save_action(self, row_number):
+        self.text_visit_when[row_number].config(state=DISABLED)
+        self.text_visit_where[row_number].config(state=DISABLED)
+        self.text_visit_status[row_number].config(state=DISABLED)
+        self.text_visit_withwhom[row_number].config(state=DISABLED)
+        self.button_visit_save[row_number].config(state=DISABLED)
+        self.button_visit_edit[row_number].config(state=NORMAL)
+

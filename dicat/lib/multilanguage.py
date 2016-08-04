@@ -218,7 +218,7 @@ elif language == "en":
 
     ################  COLUMN HEADER  ##################
     col_candidate  = u"Candidate"
-    col_visitlabel = u"Visit label"
+    col_visitlabel = u"Visit"
     col_withwhom   = u"With whom"
     col_when   = u"Date/Time (YYYY-MM-DD HH:MM)"
     col_where  = u"Visit location"
