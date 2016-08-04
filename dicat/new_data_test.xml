@@ -56,8 +56,8 @@
         <VisitStatus>completed</VisitStatus>
         <!-- possible status for visit: scheduled, completed, to re-schedule (cancelled) (to schedule when previous visit completed)-->
         <VisitDate>2016-01-06</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>01:15 PM</VisitStartWhen>
+        <VisitEndWhen>02:15 PM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Annie</VisitWithWhom>
       </Visit>
@@ -65,8 +65,8 @@
         <VisitLabel>V1</VisitLabel>
         <VisitStatus>completed</VisitStatus>
         <VisitDate>2016-04-05</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>01:15 PM</VisitStartWhen>
+        <VisitEndWhen>02:15 PM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Jennifer</VisitWithWhom>
       </Visit>
@@ -74,8 +74,8 @@
         <VisitLabel>V2</VisitLabel>
         <VisitStatus>scheduled</VisitStatus>
         <VisitDate>2016-06-05</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>01:15 PM</VisitStartWhen>
+        <VisitEndWhen>02:15 PM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Jennifer</VisitWithWhom>
       </Visit>
@@ -93,8 +93,8 @@
         <VisitStatus>completed</VisitStatus>
         <!-- possible status for visit: scheduled, completed, to re-schedule (cancelled) (to schedule when previous visit completed)-->
         <VisitDate>2016-01-06</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>02:15 PM</VisitStartWhen>
+        <VisitEndWhen>03:15 PM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Annie</VisitWithWhom>
       </Visit>
@@ -112,8 +112,8 @@
         <VisitStatus>completed</VisitStatus>
         <!-- possible status for visit: scheduled, completed, to re-schedule (cancelled) (to schedule when previous visit completed)-->
         <VisitDate>2016-01-06</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>10:15 AM</VisitStartWhen>
+        <VisitEndWhen>12:15 PM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Annie</VisitWithWhom>
       </Visit>
@@ -121,8 +121,8 @@
         <VisitLabel>V1</VisitLabel>
         <VisitStatus>completed</VisitStatus>
         <VisitDate>2016-04-05</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>10:15 AM</VisitStartWhen>
+        <VisitEndWhen>10:15 AM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Jennifer</VisitWithWhom>
       </Visit>
@@ -130,8 +130,8 @@
         <VisitLabel>V2</VisitLabel>
         <VisitStatus>scheduled</VisitStatus>
         <VisitDate>2016-06-05</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>09:15 AM</VisitStartWhen>
+        <VisitEndWhen>10:15 AM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Jennifer</VisitWithWhom>
       </Visit>
@@ -149,8 +149,8 @@
         <VisitStatus>completed</VisitStatus>
         <!-- possible status for visit: scheduled, completed, to re-schedule (cancelled) (to schedule when previous visit completed)-->
         <VisitDate>2016-01-06</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>11:15 AM</VisitStartWhen>
+        <VisitEndWhen>12:15 PM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Annie</VisitWithWhom>
       </Visit>
@@ -158,8 +158,8 @@
         <VisitLabel>V1</VisitLabel>
         <VisitStatus>scheduled</VisitStatus>
         <VisitDate>2016-04-05</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>09:15 AM</VisitStartWhen>
+        <VisitEndWhen>10:15 AM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Jennifer</VisitWithWhom>
       </Visit>
@@ -177,8 +177,8 @@
         <VisitStatus>completed</VisitStatus>
         <!-- possible status for visit: scheduled, completed, to re-schedule (cancelled) (to schedule when previous visit completed)-->
         <VisitDate>2016-01-05</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>10:15 AM</VisitStartWhen>
+        <VisitEndWhen>11:15 AM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Annie</VisitWithWhom>
       </Visit>
@@ -196,8 +196,8 @@
         <VisitStatus>completed</VisitStatus>
         <!-- possible status for visit: scheduled, completed, to re-schedule (cancelled) (to schedule when previous visit completed)-->
         <VisitDate>2016-01-05</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>10:15 AM</VisitStartWhen>
+        <VisitEndWhen>11:15 AM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Annie</VisitWithWhom>
       </Visit>
@@ -215,8 +215,8 @@
         <VisitStatus>completed</VisitStatus>
         <!-- possible status for visit: scheduled, completed, to re-schedule (cancelled) (to schedule when previous visit completed)-->
         <VisitDate>2016-06-05</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>10:15 AM</VisitStartWhen>
+        <VisitEndWhen>11:15 AM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Annie</VisitWithWhom>
       </Visit>
@@ -224,8 +224,8 @@
         <VisitLabel>V1</VisitLabel>
         <VisitStatus>scheduled</VisitStatus>
         <VisitDate>2016-06-05</VisitDate>
-        <VisitStartWhen>13:15</VisitStartWhen>
-        <VisitEndWhen>14:15</VisitEndWhen>
+        <VisitStartWhen>09:15 AM</VisitStartWhen>
+        <VisitEndWhen>10:15 AM</VisitEndWhen>
         <VisitWhere>Douglas</VisitWhere>
         <VisitWithWhom>Jennifer</VisitWithWhom>
       </Visit>

@@ -355,10 +355,6 @@ class DataWindow(Toplevel):
             if "VisitStatus" in visit.keys():
                 self.text_visit_status_var[row_nb].set(visit["VisitStatus"])
 
-            # # Create and populated the StringVar with values
-            # self.text_visit_startwhen_var.append(StringVar())
-            # self.text_visit_startwhen_var[row_nb].set(visit_when)
-
             # Create the visit row widgets
             label_visit_label= Label(
                 self.schedule_pane, text=self.text_visit_label_var[row_nb].get()
@@ -370,15 +366,19 @@ class DataWindow(Toplevel):
                 )
             )
             self.text_visit_startwhen.append( # visit start when widget
-                Entry(
+                OptionMenu(
                     self.schedule_pane,
-                    textvariable=self.text_visit_startwhen_var[row_nb]
+                    self.text_visit_startwhen_var[row_nb],
+                    self.text_visit_startwhen_var[row_nb].get(),
+                    *MultiLanguage.time_options
                 )
             )
             self.text_visit_endwhen.append(   # visit end when widget
-                Entry(
+                OptionMenu(
                     self.schedule_pane,
-                    textvariable=self.text_visit_endwhen_var[row_nb]
+                    self.text_visit_endwhen_var[row_nb],
+                    self.text_visit_endwhen_var[row_nb].get(),
+                    *MultiLanguage.time_options
                 )
             )
             self.text_visit_where.append(     # visit where widget
