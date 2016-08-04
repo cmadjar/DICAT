@@ -258,53 +258,68 @@ class DataWindow(Toplevel):
         self.label_visit_label = Label(     # create visit label widget
             self.schedule_pane, text=MultiLanguage.col_visitlabel
         )
-        self.label_visit_when = Label(      # create visit when widget
-            self.schedule_pane, text=MultiLanguage.col_when
+        self.label_visit_date = Label(
+            self.schedule_pane, text=MultiLanguage.col_visitdate
+        )
+        self.label_visit_startwhen = Label(      # create visit when widget
+            self.schedule_pane, text=MultiLanguage.col_visitstartwhen
+        )
+        self.label_visit_endwhen = Label(
+            self.schedule_pane, text=MultiLanguage.col_visitendwhen
         )
         self.label_visit_where = Label(     # create visit where widget
-            self.schedule_pane, text=MultiLanguage.col_where
+            self.schedule_pane, text=MultiLanguage.col_visitwhere
         )
         self.label_visit_withwhom = Label(  # create visit withwhom widget
-            self.schedule_pane, text=MultiLanguage.col_withwhom
+            self.schedule_pane, text=MultiLanguage.col_visitwithwhom
         )
         self.label_visit_status = Label(    # create visit status widget
-            self.schedule_pane, text=MultiLanguage.col_status
+            self.schedule_pane, text=MultiLanguage.col_visitstatus
         )
 
         # Draw the top row (header) widgets
         self.label_visit_label.grid(        # draw visit label widget
             row=0, column=1, padx=10, pady=5, sticky=N+S+E+W
         )
-        self.label_visit_when.grid(         # draw visit when widget
+        self.label_visit_date.grid(
             row=0, column=2, padx=10, pady=5, sticky=N+S+E+W
         )
-        self.label_visit_where.grid(        # draw visit where widget
+        self.label_visit_startwhen.grid(         # draw visit when widget
             row=0, column=3, padx=10, pady=5, sticky=N+S+E+W
         )
-        self.label_visit_withwhom.grid(     # draw visit withwhom widget
+        self.label_visit_endwhen.grid(
             row=0, column=4, padx=10, pady=5, sticky=N+S+E+W
         )
-        self.label_visit_status.grid(       # draw visit status widget
+        self.label_visit_where.grid(        # draw visit where widget
             row=0, column=5, padx=10, pady=5, sticky=N+S+E+W
         )
+        self.label_visit_withwhom.grid(     # draw visit withwhom widget
+            row=0, column=6, padx=10, pady=5, sticky=N+S+E+W
+        )
+        self.label_visit_status.grid(       # draw visit status widget
+            row=0, column=7, padx=10, pady=5, sticky=N+S+E+W
+        )
 
-        # Sort visit list based on the VisitStartWhen field
+        # Sort visit list based on the VisitDate field
         visit_list = DataManagement.sort_candidate_visit_list(visitset)
 
         # Show values on ui
         row_nb = 0   # row number index
         # Define text variable arrays to be displayed at row_nb
-        self.text_visit_label_var    = []
-        self.text_visit_when_var     = []
-        self.text_visit_where_var    = []
-        self.text_visit_status_var   = []
-        self.text_visit_withwhom_var = []
+        self.text_visit_label_var     = []
+        self.text_visit_date_var      = []
+        self.text_visit_startwhen_var = []
+        self.text_visit_endwhen_var   = []
+        self.text_visit_where_var     = []
+        self.text_visit_status_var    = []
+        self.text_visit_withwhom_var  = []
         # Define text widget arrays to be displayed at row_nb
-        self.text_visit_label    = []
-        self.text_visit_when     = []
-        self.text_visit_where    = []
-        self.text_visit_status   = []
-        self.text_visit_withwhom = []
+        self.text_visit_date      = []
+        self.text_visit_startwhen = []
+        self.text_visit_endwhen   = []
+        self.text_visit_where     = []
+        self.text_visit_status    = []
+        self.text_visit_withwhom  = []
         # Define button widget arrays to be displayed at row_nb
         self.button_visit_save = []
         self.button_visit_edit = []
@@ -312,49 +327,58 @@ class DataWindow(Toplevel):
         # Loop through visits
         for visit in visit_list:
 
-            # Check if values are set for VisitStartWhen, VisitWhere,
+            # Check if values are set for VisitDate, VisitStartWhen, VisitWhere,
             # VisitWindow & VisitStatus keys. If not, set it to empty string as
             # we need a text to display in the corresponding label widgets.
             self.text_visit_label_var.append(StringVar())
             self.text_visit_label_var[row_nb].set(visit["VisitLabel"])
-            self.text_visit_when_var.append(StringVar())
+            self.text_visit_date_var.append(StringVar())
+            self.text_visit_startwhen_var.append(StringVar())
+            self.text_visit_endwhen_var.append(StringVar())
             self.text_visit_where_var.append(StringVar())
             self.text_visit_status_var.append(StringVar())
             self.text_visit_withwhom_var.append(StringVar())
 
-            if "VisitStartWhen" in visit.keys():
+            if "VisitDate" in visit.keys():
                 #TODO: implement automatic range for next visit
-                self.text_visit_when_var[row_nb].set(
+                self.text_visit_date_var[row_nb].set(visit["VisitDate"])
+            if "VisitStartWhen" in visit.keys():
+                self.text_visit_startwhen_var[row_nb].set(
                     visit["VisitStartWhen"]
                 )
-                #visit_when = visit["VisitStartWhen"]
+            if "VisitEndWhen" in visit.keys():
+                self.text_visit_endwhen_var[row_nb].set(visit["VisitEndWhen"])
             if "VisitWhere" in visit.keys():
                 self.text_visit_where_var[row_nb].set(visit["VisitWhere"])
-                #visit_where = visit["VisitWhere"]
             if "VisitWithWhom" in visit.keys():
-                self.text_visit_withwhom_var[row_nb].set(
-                    visit["VisitWithWhom"]
-                )
-                #visit_with_whom = visit["VisitWithWhom"]
+                self.text_visit_withwhom_var[row_nb].set(visit["VisitWithWhom"])
             if "VisitStatus" in visit.keys():
                 self.text_visit_status_var[row_nb].set(visit["VisitStatus"])
-                #visit_status = visit["VisitStatus"]
 
             # # Create and populated the StringVar with values
-            # self.text_visit_when_var.append(StringVar())
-            # self.text_visit_when_var[row_nb].set(visit_when)
+            # self.text_visit_startwhen_var.append(StringVar())
+            # self.text_visit_startwhen_var[row_nb].set(visit_when)
 
             # Create the visit row widgets
-            self.text_visit_label.append(
-                Entry(        # visit label widget
-                    self.schedule_pane,
-                    textvariable=self.text_visit_label_var[row_nb]
-                )
+            label_visit_label= Label(
+                self.schedule_pane, text=self.text_visit_label_var[row_nb].get()
             )
-            self.text_visit_when.append(      # visit when widget
+            self.text_visit_date.append(      # visit date widget
                 Entry(
                     self.schedule_pane,
-                    textvariable=self.text_visit_when_var[row_nb]
+                    textvariable=self.text_visit_date_var[row_nb]
+                )
+            )
+            self.text_visit_startwhen.append( # visit start when widget
+                Entry(
+                    self.schedule_pane,
+                    textvariable=self.text_visit_startwhen_var[row_nb]
+                )
+            )
+            self.text_visit_endwhen.append(   # visit end when widget
+                Entry(
+                    self.schedule_pane,
+                    textvariable=self.text_visit_endwhen_var[row_nb]
                 )
             )
             self.text_visit_where.append(     # visit where widget
@@ -381,8 +405,9 @@ class DataWindow(Toplevel):
                 )
             )
             # Disable edition of Entry widgets
-            self.text_visit_label[row_nb].config(state=DISABLED)
-            self.text_visit_when[row_nb].config(state=DISABLED)
+            self.text_visit_date[row_nb].config(state=DISABLED)
+            self.text_visit_startwhen[row_nb].config(state=DISABLED)
+            self.text_visit_endwhen[row_nb].config(state=DISABLED)
             self.text_visit_where[row_nb].config(state=DISABLED)
             self.text_visit_status[row_nb].config(state=DISABLED)
             self.text_visit_withwhom[row_nb].config(state=DISABLED)
@@ -410,26 +435,32 @@ class DataWindow(Toplevel):
             )
 
             # Draw the visit row widget
-            self.text_visit_label[row_nb].grid(
+            label_visit_label.grid(
                 row=row_nb+1, column=1, padx=10, pady=5, sticky=N+S+E+W
             )
-            self.text_visit_when[row_nb].grid(
+            self.text_visit_date[row_nb].grid(
                 row=row_nb+1, column=2, padx=10, pady=5, sticky=N+S+E+W
             )
-            self.text_visit_where[row_nb].grid(
+            self.text_visit_startwhen[row_nb].grid(
                 row=row_nb+1, column=3, padx=10, pady=5, sticky=N+S+E+W
             )
-            self.text_visit_withwhom[row_nb].grid(
+            self.text_visit_endwhen[row_nb].grid(
                 row=row_nb+1, column=4, padx=10, pady=5, sticky=N+S+E+W
             )
-            self.text_visit_status[row_nb].grid(
+            self.text_visit_where[row_nb].grid(
                 row=row_nb+1, column=5, padx=10, pady=5, sticky=N+S+E+W
             )
+            self.text_visit_withwhom[row_nb].grid(
+                row=row_nb+1, column=6, padx=10, pady=5, sticky=N+S+E+W
+            )
+            self.text_visit_status[row_nb].grid(
+                row=row_nb+1, column=7, padx=10, pady=5, sticky=N+S+E+W
+            )
             self.button_visit_edit[row_nb].grid(
-                row=row_nb+1, column=6, padx=5, pady=5, sticky=N+S+E+W
+                row=row_nb+1, column=8, padx=5, pady=5, sticky=N+S+E+W
             )
             self.button_visit_save[row_nb].grid(
-                row=row_nb+1, column=6, padx=5, pady=5, sticky=N+S+E+W
+                row=row_nb+1, column=8, padx=5, pady=5, sticky=N+S+E+W
             )
             # Display the edit button on top
             self.button_visit_edit[row_nb].lift()
@@ -628,7 +659,9 @@ class DataWindow(Toplevel):
 
         # Capture data from fields
         visit_data['VisitLabel']    = self.text_visit_label_var[row_nb].get()
-        visit_data['VisitWhen']     = self.text_visit_when_var[row_nb].get()
+        visit_data['VisitDate']     = self.text_visit_date_var[row_nb].get()
+        visit_data['VisitStartWhen']= self.text_visit_startwhen_var[row_nb].get()
+        visit_data['VisitEndWhen']  = self.text_visit_endwhen_var[row_nb].get()
         visit_data['VisitWhere']    = self.text_visit_where_var[row_nb].get()
         visit_data['VisitStatus']   = self.text_visit_status_var[row_nb].get()
         visit_data['VisitWithWhom'] = self.text_visit_withwhom_var[row_nb].get()
@@ -641,9 +674,17 @@ class DataWindow(Toplevel):
         if not visit_data['VisitWhere']:
             visit_data['VisitWhere'] = " "
 
-        # Set VisitWhen to space if not defined in visit_data
-        if not visit_data['VisitWhen']:
-            visit_data['VisitWhen'] = " "
+        # Set VisitDate to space if not defined in visit_data
+        if not visit_data['VisitDate']:
+            visit_data['VisitDate'] = " "
+
+        # Set VisitStartWhen to space if not defined in visit_data
+        if not visit_data['VisitStartWhen']:
+            visit_data['VisitStartWhen'] = " "
+
+        # Set VisitEndWhen to space if not defined in visit_data
+        if not visit_data['VisitEndWhen']:
+            visit_data['VisitEndWhen'] = " "
 
         # Check fields format and required fields
         visit   = Visit(visit_data)
@@ -669,8 +710,9 @@ class DataWindow(Toplevel):
         """
 
         # Enable edition of row fields
-        self.text_visit_label[row_number].config(state=NORMAL)
-        self.text_visit_when[row_number].config(state=NORMAL)
+        self.text_visit_date[row_number].config(state=NORMAL)
+        self.text_visit_startwhen[row_number].config(state=NORMAL)
+        self.text_visit_endwhen[row_number].config(state=NORMAL)
         self.text_visit_where[row_number].config(state=NORMAL)
         self.text_visit_status[row_number].config(state=NORMAL)
         self.text_visit_withwhom[row_number].config(state=NORMAL)
@@ -698,8 +740,9 @@ class DataWindow(Toplevel):
 
 
         # Disable edition of row fields
-        self.text_visit_label[row_number].config(state=DISABLED)
-        self.text_visit_when[row_number].config(state=DISABLED)
+        self.text_visit_date[row_number].config(state=DISABLED)
+        self.text_visit_startwhen[row_number].config(state=DISABLED)
+        self.text_visit_endwhen[row_number].config(state=DISABLED)
         self.text_visit_where[row_number].config(state=DISABLED)
         self.text_visit_status[row_number].config(state=DISABLED)
         self.text_visit_withwhom[row_number].config(state=DISABLED)

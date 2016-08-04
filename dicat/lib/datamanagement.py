@@ -122,6 +122,7 @@ def grep_list_of_candidate_ids():
 
     return candIDs_array
 
+
 def save_candidate_data(cand_data):
     """
     Save the updated candidate information into the xml file (defined by the
@@ -373,7 +374,7 @@ def sort_candidate_visit_list(visitset):
 
         # 2- Sort list on visit.rank
         visit_list = sorted(
-            visit_list, key=lambda visit: visit["VisitStartWhen"]
+            visit_list, key=lambda visit: visit["VisitDate"]
         )
 
         return visit_list

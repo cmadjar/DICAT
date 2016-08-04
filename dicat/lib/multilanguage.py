@@ -89,10 +89,12 @@ if language == "fr":
     ################  COLUMN HEADER  ##################
     col_candidate  = u"Candidat"
     col_visitlabel = u"Visite"
-    col_withwhom   = u"Avec qui"
-    col_when   = u"Date/Heure"
-    col_where  = u"Endroit"
-    col_status = u"Statut"
+    col_visitdate  = u"Date (AAAA-MM-JJ)"
+    col_visitwhere = u"Endroit"
+    col_visitwithwhom  = u"Avec qui"
+    col_visitstartwhen = u"De (HH:MM)"
+    col_visitendwhen   = u"À (HH:MM)"
+    col_visitstatus    = u"Status"
 
     ####################  STATUS  #####################
     status_active    = u"actif"
@@ -221,10 +223,12 @@ elif language == "en":
     ################  COLUMN HEADER  ##################
     col_candidate  = u"Candidate"
     col_visitlabel = u"Visit"
-    col_withwhom   = u"With whom"
-    col_when   = u"Date/Time (YYYY-MM-DD HH:MM)"
-    col_where  = u"Visit location"
-    col_status = u"Visit status"
+    col_visitdate  = u"Date (YYYY-MM-DD)"
+    col_visitwhere = u"Visit location"
+    col_visitwithwhom  = u"With whom"
+    col_visitstartwhen = u"From (HH:MM)"
+    col_visitendwhen   = u"To (HH:MM)"
+    col_visitstatus    = u"Visit status"
 
     ####################  STATUS  #####################
     status_active    = u"active"

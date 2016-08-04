@@ -331,21 +331,37 @@ class VisitList(DataTable):
 
                         if "VisitStatus" in current_visitset[visit_key].keys():
                             # Set visit status and label
-                            status = current_visitset[visit_key]["VisitStatus"]
+                            visitstatus = current_visitset[visit_key]["VisitStatus"]
                             visit_label = \
                                 current_visitset[visit_key]["VisitLabel"]
 
-                            # Check at what time the visit has been scheduled
-                            field = 'VisitStartWhen'
+                            # Check at what date the visit has been scheduled
+                            field = 'VisitDate'
                             if field not in current_visitset[visit_key].keys():
-                                when = ''
+                                visitdate = ''
                                 #TODO check what would be next visit
                                 #TODO & set its status to "to_schedule"
                                 #when = current_visitset[visit_key].whenearliest
 
                             else:
-                                when_key = 'VisitStartWhen'
-                                when = current_visitset[visit_key][when_key]
+                                visitdate = current_visitset[visit_key][field]
+
+                            # Check at what time the visit has been scheduled
+                            field = 'VisitStartWhen'
+                            if field not in current_visitset[visit_key].keys():
+                                startwhen = ''
+
+                            else:
+                                startwhen = current_visitset[visit_key][field]
+
+                            # Check at what time the visit has been scheduled
+                            field = 'VisitEndWhen'
+                            if field not in current_visitset[visit_key].keys():
+                                endwhen = ''
+
+                            else:
+                                endwhen = current_visitset[visit_key][field]
+
 
                             # Check if the location of the visit has been set
                             field = 'VisitWhere'
@@ -353,16 +369,17 @@ class VisitList(DataTable):
                                 where = ''
 
                             else:
-                                where = current_visitset[visit_key]["VisitWhere"]
+                                where = current_visitset[visit_key][field]
 
                             # Fill in the matching_visit_rows dictionary
 
                             # Check that all values could be found
                             row_values = [
                                 candidate_id, candidate_fullname, visit_label,
-                                when,         where,              status
+                                visitdate,    startwhen,          endwhen,
+                                where,        visitstatus
                             ]
-                            row_tags = (status, candidate_id, visit_label)
+                            row_tags = (visitstatus, candidate_id, visit_label)
 
                             # If pattern, check if found its match in row_values
                             # array.
