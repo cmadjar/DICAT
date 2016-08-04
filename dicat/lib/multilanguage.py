@@ -122,6 +122,8 @@ if language == "fr":
     dialog_missing_cand_info_IDmapper = u"Les champs 'Identifiant', "  \
                                         u"'Prénom', 'Nom de famille' " \
                                         u"et 'Date de naissance' sont requis!"
+    dialog_missing_visit_info = u"'Le 'nom' et le 'Status' de la visite sont "\
+                                u"requis!'"
     ################  DATA WINDOW  ###################
     schedule_pane    = u"Calendrier"
     candidate_pane   = u"Candidat"
@@ -252,6 +254,9 @@ elif language == "en":
     dialog_missing_cand_info_IDmapper = u"'Identifier', 'Firstname', "     \
                                         u"'Lastname' and 'Date of Birth' " \
                                         u"fields are required!"
+    dialog_missing_visit_info = u"'Visit label and Visit status are required!'"
+    dialog_visitLabel_exists  = u"Visit label already exists for " \
+                                u"candidate "
 
     ################  DATA WINDOW  ###################
     schedule_pane    = u"Calendar"

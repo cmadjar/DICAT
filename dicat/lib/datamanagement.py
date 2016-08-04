@@ -298,6 +298,21 @@ def read_visit_data(xmlvisitlist, cand, data):
             data[cand]["VisitSet"][visit][visit_tag] = val
 
 
+def grep_list_of_visit_labels(candidate):
+
+    visitLabels_array = []
+
+    if os.path.isfile(Config.xmlfile):
+        # read the xmlfile
+        data = read_visitset_data()
+
+        # Grep only the data for the candidate we are interested in
+        for visit in data[candidate]['VisitSet']:
+            visitLabels_array.append(visit['VisitLabel'])
+
+    return visitLabels_array
+
+
 def read_study_data(): #TODO: implement this function
     """
     This function reads and returns the content of the XML 'projectInfo' tag.

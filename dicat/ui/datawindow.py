@@ -7,6 +7,7 @@ import lib.utilities as Utilities
 import lib.multilanguage as MultiLanguage
 import lib.datamanagement as DataManagement
 from lib.candidate import Candidate
+from lib.visit import Visit
 
 
 # ref: http://effbot.org/tkinterbook/tkinter-newDialog-windows.htm
@@ -293,11 +294,13 @@ class DataWindow(Toplevel):
         # Show values on ui
         row_nb = 0   # row number index
         # Define text variable arrays to be displayed at row_nb
+        self.text_visit_label_var    = []
         self.text_visit_when_var     = []
         self.text_visit_where_var    = []
         self.text_visit_status_var   = []
         self.text_visit_withwhom_var = []
         # Define text widget arrays to be displayed at row_nb
+        self.text_visit_label    = []
         self.text_visit_when     = []
         self.text_visit_where    = []
         self.text_visit_status   = []
@@ -312,6 +315,8 @@ class DataWindow(Toplevel):
             # Check if values are set for VisitStartWhen, VisitWhere,
             # VisitWindow & VisitStatus keys. If not, set it to empty string as
             # we need a text to display in the corresponding label widgets.
+            self.text_visit_label_var.append(StringVar())
+            self.text_visit_label_var[row_nb].set(visit["VisitLabel"])
             self.text_visit_when_var.append(StringVar())
             self.text_visit_where_var.append(StringVar())
             self.text_visit_status_var.append(StringVar())
@@ -340,8 +345,11 @@ class DataWindow(Toplevel):
             # self.text_visit_when_var[row_nb].set(visit_when)
 
             # Create the visit row widgets
-            label_visit_label = Label(        # visit label widget
-                self.schedule_pane, text=visit["VisitLabel"]
+            self.text_visit_label.append(
+                Entry(        # visit label widget
+                    self.schedule_pane,
+                    textvariable=self.text_visit_label_var[row_nb]
+                )
             )
             self.text_visit_when.append(      # visit when widget
                 Entry(
@@ -373,6 +381,7 @@ class DataWindow(Toplevel):
                 )
             )
             # Disable edition of Entry widgets
+            self.text_visit_label[row_nb].config(state=DISABLED)
             self.text_visit_when[row_nb].config(state=DISABLED)
             self.text_visit_where[row_nb].config(state=DISABLED)
             self.text_visit_status[row_nb].config(state=DISABLED)
@@ -399,11 +408,9 @@ class DataWindow(Toplevel):
                     )
                 )
             )
-            # Disable save button
-            self.button_visit_save[row_nb].config(state=DISABLED)
 
             # Draw the visit row widget
-            label_visit_label.grid(
+            self.text_visit_label[row_nb].grid(
                 row=row_nb+1, column=1, padx=10, pady=5, sticky=N+S+E+W
             )
             self.text_visit_when[row_nb].grid(
@@ -422,8 +429,12 @@ class DataWindow(Toplevel):
                 row=row_nb+1, column=6, padx=5, pady=5, sticky=N+S+E+W
             )
             self.button_visit_save[row_nb].grid(
-                row=row_nb+1, column=7, padx=5, pady=5, sticky=N+S+E+W
+                row=row_nb+1, column=6, padx=5, pady=5, sticky=N+S+E+W
             )
+            # Display the edit button on top
+            self.button_visit_edit[row_nb].lift()
+            # Hide the save button below the edit button
+            self.button_visit_save[row_nb].lower()
 
             # Increment row_nb for the next visit to be displayed
             row_nb += 1
@@ -513,7 +524,7 @@ class DataWindow(Toplevel):
 
         """
 
-        message = self.capture_data()
+        message = self.capture_candidate_data()
 
         if message:
             parent = Frame(self)
@@ -569,7 +580,7 @@ class DataWindow(Toplevel):
         return 1
 
 
-    def capture_data(self):
+    def capture_candidate_data(self):
         """
         Grep the information from the pop up window's text fields and save the
         candidate information based on the pscid.
@@ -610,7 +621,55 @@ class DataWindow(Toplevel):
         DataManagement.save_candidate_data(cand_data)
 
 
+    def capture_visit_data(self, row_nb):
+
+        # Initialize the visit dictionary with new values
+        visit_data = {}
+
+        # Capture data from fields
+        visit_data['VisitLabel']    = self.text_visit_label_var[row_nb].get()
+        visit_data['VisitWhen']     = self.text_visit_when_var[row_nb].get()
+        visit_data['VisitWhere']    = self.text_visit_where_var[row_nb].get()
+        visit_data['VisitStatus']   = self.text_visit_status_var[row_nb].get()
+        visit_data['VisitWithWhom'] = self.text_visit_withwhom_var[row_nb].get()
+
+        # Set VisitWithWhom to space string if not defined in visit_data
+        if not visit_data['VisitWithWhom']:
+            visit_data['VisitWithWhom'] = " "
+
+        # Set VisitWhere to space if not defined in visit_data
+        if not visit_data['VisitWhere']:
+            visit_data['VisitWhere'] = " "
+
+        # Set VisitWhen to space if not defined in visit_data
+        if not visit_data['VisitWhen']:
+            visit_data['VisitWhen'] = " "
+
+        # Check fields format and required fields
+        visit   = Visit(visit_data)
+        message = visit.check_visit_data(
+            self.candidate, visit_data['VisitLabel']
+        )
+        if message:
+            return message
+
+        # Save visit data
+        #TODO: save the visit data
+
+
     def visit_edit_action(self, row_number):
+        """
+        Actions to be performed when clicking on the edit visit button.
+          - Enable the specific row to be edited
+          - Move the save button on top of the edit button
+
+        :param row_number: number of the row to be edited
+         :type row_number: int
+
+        """
+
+        # Enable edition of row fields
+        self.text_visit_label[row_number].config(state=NORMAL)
         self.text_visit_when[row_number].config(state=NORMAL)
         self.text_visit_where[row_number].config(state=NORMAL)
         self.text_visit_status[row_number].config(state=NORMAL)
@@ -618,12 +677,37 @@ class DataWindow(Toplevel):
         self.button_visit_save[row_number].config(state=NORMAL)
         self.button_visit_edit[row_number].config(state=DISABLED)
 
+        # Hide the edit button below the save button
+        self.button_visit_edit[row_number].lower()
+        # Display the save button on top of the edit button
+        self.button_visit_save[row_number].lift()
+
 
     def visit_save_action(self, row_number):
+        """
+        Actions to be performed when clicking on the save visit button.
+          - Capture and save the visit data.
+          - Disable edition of all fields of the row
+          - Move the edit button back on top of the save button
+
+        :param row_number: number of the row to be saved
+         :type row_number: int
+        """
+
+        # Capture and save data entered
+
+
+        # Disable edition of row fields
+        self.text_visit_label[row_number].config(state=DISABLED)
         self.text_visit_when[row_number].config(state=DISABLED)
         self.text_visit_where[row_number].config(state=DISABLED)
         self.text_visit_status[row_number].config(state=DISABLED)
         self.text_visit_withwhom[row_number].config(state=DISABLED)
         self.button_visit_save[row_number].config(state=DISABLED)
         self.button_visit_edit[row_number].config(state=NORMAL)
+
+        # Display the edit button on top
+        self.button_visit_edit[row_number].lift()
+        # Hide the save button below the edit button
+        self.button_visit_save[row_number].lower()
 

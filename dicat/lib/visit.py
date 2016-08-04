@@ -3,6 +3,8 @@
 import datetime
 
 import lib.utilities as utilities
+import lib.multilanguage as MultiLanguage
+import lib.datamanagement as DataManagement
 
 
 class VisitSetup():
@@ -50,43 +52,63 @@ class VisitSetup():
         self.actions = actions  #not implemented yet!
 
 
-class Visit(VisitSetup):
+class Visit():
     """
-    The Visit(VisitSetup) class help define individual visit of the candidate using VisitSetup(object) instances as 'templates'.
-    Upon creation of the first meeting with a candidate, the Candidate(object) instance will get a full set of Visit(VisitSetup) instances.
-    This set of visits is contained in Candidate.visitset
-    Each time a visit is being setup, a 'time window' is calculated to define the earliest and latest date at which
-    the 'nextVisit' should occur.
 
-    Attributes: (In addition of parent class attributes.)
-        when:          Date at which this visit is occurring. (default to None)
-        when_earliest: Earliest date when this visit should occur. Set to value when previous visit is activated.  (default to None)
-        when_latest:   Latest date when this visit should occur. Set to value when previous visit is activated. (default to None)
-        where:         Place where this meeting is taking place. (default to None)
-        whitwhom:      Professional meeting the study candidate at the reception. (default to None)
-        status:        Status of this visit. Set to active when 'when' is set (default to None)
     """
-    def __init__(self, rank, visitlabel, previousvisit, visitwindow, visitmargin, actions=None, uid=None, when = None,
-                 whenearliest = None, whenlatest = None, where = None, withwhom = None, status = None):
-        VisitSetup.__init__(self, rank, visitlabel, previousvisit, visitwindow, visitmargin, actions, uid)
-        self.when = when
-        self.whenearliest = whenearliest
-        self.whenlatest = whenlatest
-        self.where = where
-        self.withwhom = withwhom
-        self.status = status
+    def __init__(self, visit_data):
+        # Required fields in visit_data
+        self.visitlabel  = visit_data['VisitLabel']
+        self.visitstatus = visit_data['VisitStatus']
 
-    def visit_date_range(self):
-        #need to handle the case where a visit has no dates
-        #this works but Exception handling seems to broad
-        try:
-            early_date = datetime.datetime.date(self.whenearliest)
-            late_date = datetime.datetime.date(self.whenlatest)
-            date_range = str(early_date), '<>', str(late_date)
-        except Exception as e:
-            #print e
-            date_range = ""
-        return date_range
+        # Optional fields
+        if 'VisitWhen' in visit_data:
+            self.visitwhen = visit_data['VisitWhen']
+        else:
+            self.visitwhen = " "
+        if 'VisitWhere' in visit_data:
+            self.visitwhere = visit_data['VisitWhere']
+        else:
+            self.visitwhere = " "
+        if 'VisitWithWhom' in visit_data:
+            self.visitwithwhom = visit_data['VisitWithWhom']
+        else:
+            self.visitwithwhom = " "
+
+
+    def check_visit_data(self, candidate, visit=''):
+
+        # Check that all required fields are set (a.k.a. visitlabel and status)
+        # Error message is stored in MultiLanguage.dialog_missing_visit_info
+        if not self.visitlabel or not self.visitstatus:
+            return MultiLanguage.dialog_missing_visit_info
+
+        #
+        visits_array = DataManagement.grep_list_of_visit_labels(candidate)
+        if visit == 'new' and self.visitlabel in visits_array:
+            message = DataManagement.dialog_visitLabel_exists + candidate
+            return message
+
+        # Check date format and hour format
+        #TODO: implement the date check and hour check
+
+        # If we get there, it means all the data is good so no message needs to
+        # be displayed. Return False so that no message is displayed.
+        return False
+
+
+    # TODO: move this visit_date_range function somewhere else?
+    # def visit_date_range(self):
+    #     #need to handle the case where a visit has no dates
+    #     #this works but Exception handling seems to broad
+    #     try:
+    #         early_date = datetime.datetime.date(self.whenearliest)
+    #         late_date = datetime.datetime.date(self.whenlatest)
+    #         date_range = str(early_date), '<>', str(late_date)
+    #     except Exception as e:
+    #         #print e
+    #         date_range = ""
+    #     return date_range
 
 
 
