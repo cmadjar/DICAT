@@ -773,7 +773,6 @@ class DataWindow(Toplevel):
 
         """
 
-        # TODO: Show warning message are you sure? If yes, set back to view mode
         #self.cancel_button()
         parent = Frame(self)
         newwin = DialogBox.ConfirmYesNo(parent, MultiLanguage.dialog_cancel)

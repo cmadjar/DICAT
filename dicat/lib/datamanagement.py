@@ -334,6 +334,16 @@ def grep_list_of_visit_labels(candidate):
 
 
 def save_visit_data(candidate, visit_data):
+    """
+    Save the updated visit information into the XML file (defined by the global
+    variable Config.xml).
+
+    :param candidate:  candidate for which to save the modified visit info
+     :type candidate:  str
+    :param visit_data: update visit information dictionary
+     :type visit_data: str
+
+    """
 
     # Check to see if xmldoc global variable and file exist before saving
     if os.path.isfile(Config.xmlfile) and xmldoc:
@@ -396,6 +406,13 @@ def save_study_data(study_data): #TODO: implement this function
 
 
 def save_xmldoc():
+    """
+    This function will open the XML file (Config.xmlfile) for writing and dump
+    the xmldoc content in it. It will call remove_empty_lines_from_file() to
+    remove all empty line occurences from the xmlfile that gets inserted by
+    function writexml (bug of minidom)...
+
+    """
 
     # Update the xml file with the correct values
     f = open(Config.xmlfile, "w")
@@ -449,6 +466,19 @@ def sort_candidate_visit_list(visitset):
 
 
 def find_candidate_elem(xmldata, candidate):
+    """
+    Returns the candidate element of a dictionary or xmldom dictionary that
+    matches value stored in candidate variable.
+
+    :param xmldata:   xmldata dictionary or data dictionary
+     :type xmldata:   dict
+    :param candidate: candidate identifier to use to look for matching cand_elem
+     :type candidate: str
+
+    :return: the candidate element found in the dictionary that matches
+     :rtype: dict or False
+
+    """
 
     # Loop through all the candidates that exist in the XML file and find
     # the candidate's key
@@ -465,6 +495,19 @@ def find_candidate_elem(xmldata, candidate):
 
 
 def find_visit_elem(cand_elem, visit_label):
+    """
+    Returns the visit element of a dictionary or xmldom dictionary that
+    matches value stored in visit_label variable.
+
+    :param xmldata:     xmldata dictionary or data dictionary
+     :type xmldata:     dict
+    :param visit_label: visit label to use to look for matching visit_elem
+     :type visit_label: str
+
+    :return: the visit element found in the dictionary that matches
+     :rtype: dict or False
+
+    """
 
     # Loop through all the visits of candidate cand_key that exists in the XML
     # file and find the visit key
