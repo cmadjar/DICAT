@@ -168,26 +168,19 @@ class DataWindow(Toplevel):
         self.label_gender = Label(    # gender label
             self.candidate_pane, text=MultiLanguage.candidate_gender
         )
-        gender_options = [' ', 'Male', 'Female']
-        self.text_gender  = OptionMenu( # gender selected from a drop down menu
+        self.text_gender  = Combobox( # gender selected from a drop down menu
             self.candidate_pane,
-            self.text_gender_var,  # variable in which to store the selection
-            self.text_gender_var.get(), # default value to be used at display
-            *gender_options             # list of drop down options
+            textvariable=self.text_gender_var, # variable to store the selection
+            values=MultiLanguage.gender_options # list of drop down options
         )
         self.label_status = Label(    # candidate status label
             self.candidate_pane, text=MultiLanguage.candidate_status
         )
         #TODO: grep the status_options list from the project information
-        status_options = [
-            ' ',     'active',     'withdrawn', 'excluded',
-            'death', 'ineligible', 'completed'
-        ]
-        self.text_status  = OptionMenu( # cand. status selected from drop down
+        self.text_status  = Combobox( # cand. status selected from drop down
             self.candidate_pane,
-            self.text_status_var,  # variable in which to store the selection
-            self.text_status_var.get(), # default value to be used at display
-            *status_options             # list of drop down options
+            textvariable=self.text_status_var, # variable to store the selection
+            values=MultiLanguage.candidate_status_options # list of options
         )
         self.label_phone = Label(     # phone number label
             self.candidate_pane, text=MultiLanguage.candidate_phone
@@ -195,6 +188,10 @@ class DataWindow(Toplevel):
         self.text_phone  = Entry(     # phone number text box
             self.candidate_pane, textvariable=self.text_phone_var
         )
+
+        # Change state of combobox to be readonly
+        self.text_gender.config(state='readonly')
+        self.text_status.config(state='readonly')
 
         # Draw widgets in the candidate pane section
         self.label_pscid.grid(     # draw identifier label
@@ -321,8 +318,10 @@ class DataWindow(Toplevel):
         self.text_visit_status    = []
         self.text_visit_withwhom  = []
         # Define button widget arrays to be displayed at row_nb
-        self.button_visit_save = []
-        self.button_visit_edit = []
+        self.button_visit_save   = []
+        self.button_visit_edit   = []
+        self.button_visit_delete = []
+        self.button_visit_cancel = []
 
         # Loop through visits
         for visit in visit_list:
@@ -366,19 +365,19 @@ class DataWindow(Toplevel):
                 )
             )
             self.text_visit_startwhen.append( # visit start when widget
-                OptionMenu(
+                Combobox(
                     self.schedule_pane,
-                    self.text_visit_startwhen_var[row_nb],
-                    self.text_visit_startwhen_var[row_nb].get(),
-                    *MultiLanguage.time_options
+                    textvariable=self.text_visit_startwhen_var[row_nb],
+                    values=MultiLanguage.time_options,
+                    width=9
                 )
             )
             self.text_visit_endwhen.append(   # visit end when widget
-                OptionMenu(
+                Combobox(
                     self.schedule_pane,
-                    self.text_visit_endwhen_var[row_nb],
-                    self.text_visit_endwhen_var[row_nb].get(),
-                    *MultiLanguage.time_options
+                    textvariable=self.text_visit_endwhen_var[row_nb],
+                    values=MultiLanguage.time_options,
+                    width=9
                 )
             )
             self.text_visit_where.append(     # visit where widget
@@ -393,15 +392,12 @@ class DataWindow(Toplevel):
                     text=self.text_visit_withwhom_var[row_nb]
                 )
             )
-            status_options = [
-                ' ', 'scheduled', 'confirmed', 'to schedule', 'completed'
-            ]
             self.text_visit_status.append(    # visit status widget
-                OptionMenu(
+                Combobox(
                     self.schedule_pane,
-                    self.text_visit_status_var[row_nb],
-                    self.text_visit_status_var[row_nb].get(),
-                    *status_options
+                    textvariable=self.text_visit_status_var[row_nb],
+                    values=MultiLanguage.visit_status_options,
+                    width=10
                 )
             )
             # Disable edition of Entry widgets
@@ -418,8 +414,8 @@ class DataWindow(Toplevel):
                     self.schedule_pane,
                     text="Edit",
                     width=5,
-                    command=lambda row_nb=row_nb: self.visit_edit_action(
-                    row_nb
+                    command=lambda row_nb=row_nb: self.set_row_to_edit_mode(
+                        row_nb
                     )
                 )
             )
@@ -429,6 +425,26 @@ class DataWindow(Toplevel):
                     text="Save",
                     width=5,
                     command=lambda row_nb=row_nb: self.visit_save_action(
+                        row_nb
+                    )
+                )
+            )
+            self.button_visit_delete.append(
+                Button(
+                    self.schedule_pane,
+                    text='Delete',
+                    width=5,
+                    command=lambda row_nb=row_nb: self.visit_delete_action(
+                        row_nb
+                    )
+                )
+            )
+            self.button_visit_cancel.append(
+                Button(
+                    self.schedule_pane,
+                    text='Cancel',
+                    width=5,
+                    command=lambda row_nb=row_nb: self.visit_cancel_action(
                         row_nb
                     )
                 )
@@ -462,10 +478,18 @@ class DataWindow(Toplevel):
             self.button_visit_save[row_nb].grid(
                 row=row_nb+1, column=8, padx=5, pady=5, sticky=N+S+E+W
             )
-            # Display the edit button on top
+            self.button_visit_delete[row_nb].grid(
+                row=row_nb+1, column=9, padx=5, pady=5, sticky=N+S+E+W
+            )
+            self.button_visit_cancel[row_nb].grid(
+                row=row_nb+1, column=9, padx=5, pady=5, sticky=N+S+E+W
+            )
+            # Display the edit and delete buttons on top
             self.button_visit_edit[row_nb].lift()
-            # Hide the save button below the edit button
+            self.button_visit_delete[row_nb].lift()
+            # Hide the save and cancel button below the edit button
             self.button_visit_save[row_nb].lower()
+            self.button_visit_cancel[row_nb].lower()
 
             # Increment row_nb for the next visit to be displayed
             row_nb += 1
@@ -694,35 +718,10 @@ class DataWindow(Toplevel):
         if message:
             return message
 
+        print visit_data
+
         # Save visit data
         #TODO: save the visit data
-
-
-    def visit_edit_action(self, row_number):
-        """
-        Actions to be performed when clicking on the edit visit button.
-          - Enable the specific row to be edited
-          - Move the save button on top of the edit button
-
-        :param row_number: number of the row to be edited
-         :type row_number: int
-
-        """
-
-        # Enable edition of row fields
-        self.text_visit_date[row_number].config(state=NORMAL)
-        self.text_visit_startwhen[row_number].config(state=NORMAL)
-        self.text_visit_endwhen[row_number].config(state=NORMAL)
-        self.text_visit_where[row_number].config(state=NORMAL)
-        self.text_visit_status[row_number].config(state=NORMAL)
-        self.text_visit_withwhom[row_number].config(state=NORMAL)
-        self.button_visit_save[row_number].config(state=NORMAL)
-        self.button_visit_edit[row_number].config(state=DISABLED)
-
-        # Hide the edit button below the save button
-        self.button_visit_edit[row_number].lower()
-        # Display the save button on top of the edit button
-        self.button_visit_save[row_number].lift()
 
 
     def visit_save_action(self, row_number):
@@ -734,10 +733,48 @@ class DataWindow(Toplevel):
 
         :param row_number: number of the row to be saved
          :type row_number: int
+
         """
 
         # Capture and save data entered
+        #message = self.capture_visit_data(row_number)
 
+        # Disable edition of row fields
+        self.set_row_to_view_mode(row_number)
+
+
+    def visit_delete_action(self, row_number):
+        """
+        Actions to be performed when hitting the delete button.
+
+        :param row_number: number of the row to be deleted
+         :type row_number: int
+
+        """
+
+        #TODO: show warning before deleting
+
+        #TODO: delete visit
+        pass
+
+
+    def visit_cancel_action(self, row_number):
+        """
+        Actions to be performed when hitting the cancel button.
+
+        :param row_number: number of the row to cancel edition
+         :type row_number: int
+
+        """
+
+        # TODO: Show warning message are you sure? If yes, set back to view mode
+        #self.cancel_button()
+
+        # Disable edition of row fields
+        self.set_row_to_view_mode(row_number)
+
+
+    def set_row_to_view_mode(self, row_number):
 
         # Disable edition of row fields
         self.text_visit_date[row_number].config(state=DISABLED)
@@ -751,6 +788,27 @@ class DataWindow(Toplevel):
 
         # Display the edit button on top
         self.button_visit_edit[row_number].lift()
+        self.button_visit_delete[row_number].lift()
         # Hide the save button below the edit button
         self.button_visit_save[row_number].lower()
+        self.button_visit_cancel[row_number].lower()
 
+
+    def set_row_to_edit_mode(self, row_number):
+
+        # Enable edition of row fields
+        self.text_visit_date[row_number].config(state=NORMAL)
+        self.text_visit_startwhen[row_number].config(state='readonly')
+        self.text_visit_endwhen[row_number].config(state='readonly')
+        self.text_visit_where[row_number].config(state=NORMAL)
+        self.text_visit_status[row_number].config(state='readonly')
+        self.text_visit_withwhom[row_number].config(state=NORMAL)
+        self.button_visit_save[row_number].config(state=NORMAL)
+        self.button_visit_edit[row_number].config(state=DISABLED)
+
+        # Hide the edit button below the save button
+        self.button_visit_edit[row_number].lower()
+        self.button_visit_delete[row_number].lower()
+        # Display the save button on top of the edit button
+        self.button_visit_save[row_number].lift()
+        self.button_visit_cancel[row_number].lift()
