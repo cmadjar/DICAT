@@ -1,11 +1,9 @@
 #import standard packages
 #import internal packages
-import datetime
-
 import lib.utilities as utilities
 import lib.multilanguage as MultiLanguage
 import lib.datamanagement as DataManagement
-
+import lib.utilities as Utilities
 
 class VisitSetup():
     """
@@ -56,16 +54,25 @@ class Visit():
     """
 
     """
+
     def __init__(self, visit_data):
         # Required fields in visit_data
         self.visitlabel  = visit_data['VisitLabel']
         self.visitstatus = visit_data['VisitStatus']
 
         # Optional fields
-        if 'VisitWhen' in visit_data:
-            self.visitwhen = visit_data['VisitWhen']
+        if 'VisitDate' in visit_data:
+            self.visitdate = visit_data['VisitDate']
         else:
-            self.visitwhen = " "
+            self.visitdate = " "
+        if 'VisitStartWhen' in visit_data:
+            self.visitstartwhen = visit_data['VisitStartWhen']
+        else:
+            self.visitstartwhen = " "
+        if 'VisitEndWhen' in visit_data:
+            self.visitendwhen = visit_data['VisitEndWhen']
+        else:
+            self.visitendwhen = " "
         if 'VisitWhere' in visit_data:
             self.visitwhere = visit_data['VisitWhere']
         else:
@@ -77,20 +84,40 @@ class Visit():
 
 
     def check_visit_data(self, candidate, visit=''):
+        """
+        Check that the data entered in the data window for a given visit row is
+        as expected. If not, will return an error message that can be displayed.
+
+        :param candidate: Identifier of the candidate to look for data
+         :type candidate: str
+        :param visit: VisitLabel to check for availability (or new if new visit)
+         :type visit: str
+
+        :return: error message determined by the checks
+         :rtype: str
+        """
 
         # Check that all required fields are set (a.k.a. visitlabel and status)
-        # Error message is stored in MultiLanguage.dialog_missing_visit_info
+        # (Error message is stored in MultiLanguage.dialog_missing_visit_info)
         if not self.visitlabel or not self.visitstatus:
             return MultiLanguage.dialog_missing_visit_info
 
-        #
+        # If visit is new, check that the 'VisitLabel' used is unique for that
+        # candidate
         visits_array = DataManagement.grep_list_of_visit_labels(candidate)
+        # If visit is 'new', it means we are creating a new visit for that
+        # candidate so we need to check if the VisitLabel entered is unique
+        # for that specific candidate.
         if visit == 'new' and self.visitlabel in visits_array:
             message = DataManagement.dialog_visitLabel_exists + candidate
             return message
 
-        # Check date format and hour format
-        #TODO: implement the date check and hour check
+        # If visit date does not matches YYYY-MM-DD format, return an error.
+        # (Error message is stored in MultiLanguage.dialog_bad_date_format)
+        date_ok = Utilities.check_date_format(self.visitdate)
+        if not date_ok:
+            print "Hello"
+            return MultiLanguage.dialog_bad_date_format
 
         # If we get there, it means all the data is good so no message needs to
         # be displayed. Return False so that no message is displayed.

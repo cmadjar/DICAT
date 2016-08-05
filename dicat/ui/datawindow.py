@@ -718,10 +718,8 @@ class DataWindow(Toplevel):
         if message:
             return message
 
-        print visit_data
-
         # Save visit data
-        #TODO: save the visit data
+        DataManagement.save_visit_data(self.candidate, visit_data)
 
 
     def visit_save_action(self, row_number):
@@ -737,7 +735,12 @@ class DataWindow(Toplevel):
         """
 
         # Capture and save data entered
-        #message = self.capture_visit_data(row_number)
+        message = self.capture_visit_data(row_number)
+        if message:
+            parent = Frame(self)
+            newwin = DialogBox.ErrorMessage(parent, message)
+            if newwin.buttonvalue == 1:
+                return # to keep the fields open for edition after clicking OK
 
         # Disable edition of row fields
         self.set_row_to_view_mode(row_number)
@@ -760,7 +763,10 @@ class DataWindow(Toplevel):
 
     def visit_cancel_action(self, row_number):
         """
-        Actions to be performed when hitting the cancel button.
+        Actions to be performed when hitting the cancel button:
+          - show a warning message
+          - if confirmed cancellation, disable edition of row widgets
+          - else, go back to edition of the row widgets
 
         :param row_number: number of the row to cancel edition
          :type row_number: int
@@ -769,12 +775,22 @@ class DataWindow(Toplevel):
 
         # TODO: Show warning message are you sure? If yes, set back to view mode
         #self.cancel_button()
-
-        # Disable edition of row fields
-        self.set_row_to_view_mode(row_number)
+        parent = Frame(self)
+        newwin = DialogBox.ConfirmYesNo(parent, MultiLanguage.dialog_cancel)
+        if newwin.buttonvalue == 1:
+            self.set_row_to_view_mode(row_number)
+        else:
+            return
 
 
     def set_row_to_view_mode(self, row_number):
+        """
+        Sets the row to view mode (a.k.a. disable widgets for edition).
+
+        :param row_number: number of the row to disable edition
+         :type row_number: int
+
+        """
 
         # Disable edition of row fields
         self.text_visit_date[row_number].config(state=DISABLED)
@@ -795,6 +811,13 @@ class DataWindow(Toplevel):
 
 
     def set_row_to_edit_mode(self, row_number):
+        """
+        Sets the row to edit mode (a.k.a. enable widgets for edition).
+
+        :param row_number: number of the row to enable edition
+         :type row_number: int
+
+        """
 
         # Enable edition of row fields
         self.text_visit_date[row_number].config(state=NORMAL)

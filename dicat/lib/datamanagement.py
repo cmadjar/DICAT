@@ -107,7 +107,7 @@ def grep_list_of_candidate_ids():
     candIDs_array = []
 
     if os.path.isfile(Config.xmlfile):
-        # read the xml file
+        # Read the XML file
         (xmldata, xmlcandlist) = read_data(Config.xmlfile)
 
         for cand in xmlcandlist:
@@ -137,7 +137,7 @@ def save_candidate_data(cand_data):
 
     # Check to see if xmldoc global variable and file exist before saving
     if os.path.isfile(Config.xmlfile) and xmldoc:
-        # Read the xml file
+        # Read the XML file
         (xmldata, xmlcandlist) = read_data(Config.xmlfile)
         updated = False
 
@@ -206,11 +206,7 @@ def save_candidate_data(cand_data):
                     xml_elem.appendChild(value)
 
         # Update the xml file with the correct values
-        f = open(Config.xmlfile, "w")
-        xmldoc.writexml(f, addindent="  ", newl="\n")
-        f.close()
-        # Remove the empty lines inserted by writexml (weird bug from writexml)
-        remove_empty_lines_from_file(Config.xmlfile)
+        save_xmldoc()
 
 
 def read_visitset_data():
@@ -300,18 +296,79 @@ def read_visit_data(xmlvisitlist, cand, data):
 
 
 def grep_list_of_visit_labels(candidate):
+    """
+    Read the XML file and grep all the visits found for a given 'candidate' into
+    an array visitLabels_array.
+
+    :param candidate: candidate ID of the candidate to look for existing visits
+     :type candidate: str
+
+    :return visitLabels_array: list of all visit labels found for the candidate
+     :rtype visitLabels_array: list
+
+    """
 
     visitLabels_array = []
 
     if os.path.isfile(Config.xmlfile):
-        # read the xmlfile
+        # Read the XML file
         data = read_visitset_data()
 
-        # Grep only the data for the candidate we are interested in
-        for visit in data[candidate]['VisitSet']:
-            visitLabels_array.append(visit['VisitLabel'])
+        # Find out the key of the candidate in question based on its identifier
+        cand_key = find_candidate_elem(data, candidate)
 
+        # Grep list of visits for that candidate
+        for visit_data in data[cand_key]['VisitSet']:
+            for elem in visit_data.childNodes:
+                tag=elem.localName
+                if tag == 'VisitLabel':
+                    visit_elem = visit_data.getElementsByTagName(tag)[0]
+                    visitlabel = visit_elem.firstChild.nodeValue
+                    visitLabels_array.append(visitlabel)
+
+    else:
+        return False
+
+    # Returns list of visit labels found for that candidate
     return visitLabels_array
+
+
+def save_visit_data(candidate, visit_data):
+
+    # Check to see if xmldoc global variable and file exist before saving
+    if os.path.isfile(Config.xmlfile) and xmldoc:
+        # Read the XML file
+        (xmldata, xmlcandlist) = read_data(Config.xmlfile)
+        updated = False
+
+        # Loop through all the candidates that exist in the XML file and find
+        # the candidate's key
+        cand_elem = find_candidate_elem(xmlcandlist, candidate)
+
+        # Loop through all visits of that candidate and find the visit's key
+        visit_elem = find_visit_elem(cand_elem, visit_data['VisitLabel'])
+
+        # If visit elem was found, update the fields
+        if visit_elem:
+
+            # Grep the XML elements to update
+            xml_visitdate     = visit_elem.getElementsByTagName('VisitDate')[0]
+            xml_visitstartwhen= visit_elem.getElementsByTagName('VisitStartWhen')[0]
+            xml_visitendwhen  = visit_elem.getElementsByTagName('VisitEndWhen')[0]
+            xml_visitwhere    = visit_elem.getElementsByTagName('VisitWhere')[0]
+            xml_visitwithwhom = visit_elem.getElementsByTagName('VisitWithWhom')[0]
+
+            # Replace elements' value with what has been captured in visit_data dict
+            xml_visitdate.firstChild.nodeValue = visit_data['VisitDate']
+            xml_visitstartwhen.firstChild.nodeValue = visit_data['VisitStartWhen']
+            xml_visitendwhen.firstChild.nodeValue = visit_data['VisitEndWhen']
+            xml_visitwhere.firstChild.nodeValue = visit_data['VisitWhere']
+            xml_visitwithwhom.firstChild.nodeValue = visit_data['VisitWithWhom']
+
+            updated = True
+
+        # Update the XML file with the correct values
+        save_xmldoc()
 
 
 def read_study_data(): #TODO: implement this function
@@ -336,6 +393,17 @@ def save_study_data(study_data): #TODO: implement this function
     :return:
     """
     pass
+
+
+def save_xmldoc():
+
+    # Update the xml file with the correct values
+    f = open(Config.xmlfile, "w")
+    xmldoc.writexml(f, addindent="  ", newl="\n")
+    f.close()
+
+    # Remove the empty lines inserted by writexml (weird bug from writexml)
+    remove_empty_lines_from_file(Config.xmlfile)
 
 
 def remove_empty_lines_from_file(file):
@@ -378,6 +446,38 @@ def sort_candidate_visit_list(visitset):
         )
 
         return visit_list
+
+
+def find_candidate_elem(xmldata, candidate):
+
+    # Loop through all the candidates that exist in the XML file and find
+    # the candidate's key
+    for cand_elem in xmldata:
+        for elem in cand_elem.childNodes:
+            tag = elem.localName
+            if not tag:
+                continue
+            val = cand_elem.getElementsByTagName(tag)[0].firstChild.nodeValue
+            if tag == "Identifier" and val == candidate:
+                return cand_elem
+
+    return False
+
+
+def find_visit_elem(cand_elem, visit_label):
+
+    # Loop through all the visits of candidate cand_key that exists in the XML
+    # file and find the visit key
+    for visit_elem in cand_elem.getElementsByTagName('Visit'):
+        for elem in visit_elem.childNodes:
+            tag = elem.localName
+            if not tag:
+                continue
+            val = visit_elem.getElementsByTagName(tag)[0].firstChild.nodeValue
+            if tag == 'VisitLabel' and val == visit_label:
+                return visit_elem
+
+    return False
 
 
 def dict_match(pattern, data_dict):

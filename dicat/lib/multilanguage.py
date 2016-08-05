@@ -110,8 +110,9 @@ if language == "fr":
                    u"sauvegarder!\n\nVoulez-vous continuer?"
     dialog_title_confirm   = u"Veuillez confirmer!"
     dialog_title_error     = u"Erreur"
-    dialog_bad_dob_format  = u"La date de naissance doit être formatté en " \
+    dialog_bad_dob_format  = u"La date de naissance doit être formattée en " \
                              u"AAAA-MM-JJ!"
+    dialog_bad_date_format = u"La date doit être formattée en AAAA-MM-JJ!"
     dialog_no_data_entered = u"Au moins un des champs doit être entré pour " \
                              u"chercher un candidat."
     warning_filters_set    = u"ATTENTION: des filtres sont en fonction. " \
@@ -126,6 +127,8 @@ if language == "fr":
                                         u"et 'Date de naissance' sont requis!"
     dialog_missing_visit_info = u"'Le 'nom' et le 'Status' de la visite sont "\
                                 u"requis!'"
+    dialog_cancel = u"Vous êtes sur le point d'annuler l'édition des données " \
+                    u"sans sauver!\n\nVoulez-vous continuer?"
     ################  DATA WINDOW  ###################
     schedule_pane    = u"Calendrier"
     candidate_pane   = u"Candidat"
@@ -280,6 +283,7 @@ elif language == "en":
     dialog_title_confirm   = u"Please confirm!"
     dialog_title_error     = u"Error"
     dialog_bad_dob_format  = u"Date of Birth should be in YYYY-MM-DD format!"
+    dialog_bad_date_format = u"Date should be in YYYY-MM-DD format!"
     dialog_no_data_entered = u"At least one of the fields needs to be entered " \
                              u"to search_event a candidate."
     warning_filters_set    = u"WARNING: filters are set. Only matching " \
@@ -294,6 +298,8 @@ elif language == "en":
     dialog_missing_visit_info = u"'Visit label and Visit status are required!'"
     dialog_visitLabel_exists  = u"Visit label already exists for " \
                                 u"candidate "
+    dialog_cancel = u"You are about to cancel edition without saving!\n\n" \
+                    u"Do you want to continue?"
 
     ################  DATA WINDOW  ###################
     schedule_pane    = u"Calendar"

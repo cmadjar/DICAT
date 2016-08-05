@@ -63,6 +63,8 @@ class Candidate():
 
         :param tab: IDMapper or Scheduler tab
          :type tab: str
+        :param candidate: CandID to check for availability (new if new cand)
+         :type candidate: str
 
         :return: error message determined by the checks
          :rtype: str
@@ -82,8 +84,8 @@ class Candidate():
 
         # If candidate is new, check that the 'Identifier' used is unique
         candIDs_array = DataManagement.grep_list_of_candidate_ids()
-        # if candidate not populated with a candID, it means we are creating a
-        # new candidate so we need to check if the PSCID entered is unique.
+        # If candidate is 'new', it means we are creating a new candidate so
+        # we need to check if the PSCID entered is unique.
         if candidate == 'new' and self.pscid in candIDs_array:
                 return MultiLanguage.dialog_candID_already_exists
 
