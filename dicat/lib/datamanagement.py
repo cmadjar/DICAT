@@ -333,7 +333,7 @@ def grep_list_of_visit_labels(candidate):
     return visitLabels_array
 
 
-def save_visit_data(candidate, visit_data):
+def save_visit_data(candidate, visit_data, delete=False):
     """
     Save the updated visit information into the XML file (defined by the global
     variable Config.xml).
@@ -359,7 +359,7 @@ def save_visit_data(candidate, visit_data):
         visit_elem = find_visit_elem(cand_elem, visit_data['VisitLabel'])
 
         # If visit elem was found, update the fields
-        if visit_elem:
+        if visit_elem and not delete:
 
             # Grep the XML elements to update
             xml_visitdate     = visit_elem.getElementsByTagName('VisitDate')[0]
@@ -369,13 +369,48 @@ def save_visit_data(candidate, visit_data):
             xml_visitwithwhom = visit_elem.getElementsByTagName('VisitWithWhom')[0]
 
             # Replace elements' value with what has been captured in visit_data dict
-            xml_visitdate.firstChild.nodeValue = visit_data['VisitDate']
-            xml_visitstartwhen.firstChild.nodeValue = visit_data['VisitStartWhen']
-            xml_visitendwhen.firstChild.nodeValue = visit_data['VisitEndWhen']
-            xml_visitwhere.firstChild.nodeValue = visit_data['VisitWhere']
+            xml_visitdate.firstChild.nodeValue     = visit_data['VisitDate']
+            xml_visitendwhen.firstChild.nodeValue  = visit_data['VisitEndWhen']
+            xml_visitwhere.firstChild.nodeValue    = visit_data['VisitWhere']
             xml_visitwithwhom.firstChild.nodeValue = visit_data['VisitWithWhom']
+            xml_visitstartwhen.firstChild.nodeValue=visit_data['VisitStartWhen']
 
             updated = True
+
+        if visit_elem and delete:
+            cand_elem.removeChild(visit_elem)
+            updated = True
+
+        # If no visit was updated, insert a new visit to the candidate
+        if not updated:
+            # Create a new Visit element
+            visit = xmldoc.createElement("Visit")
+            cand_elem.appendChild(visit)
+
+            # Loop through visit_data keys ('VisitLabel', 'VisitStatus'...) and
+            # add them to the XML handler (xmldoc)
+            for key in visit_data:
+                # create the child tag ('VisitLabel' etc ...) and its value
+                xml_elem = xmldoc.createElement(key)
+                value    = xmldoc.createTextNode(visit_data[key])
+                # append the child tag and value to the 'Visit' tag
+                visit.appendChild(xml_elem)
+                xml_elem.appendChild(value)
+
+            # Loop through optional fields and add them to the XML handler with
+            # an empty string if the field was not present in visit_data
+            optional_fields = [
+                'VisitDate',  'VisitStartWhen', 'VisitEndWhen',
+                'VisitWhere', 'VisitWithWhom',
+            ]
+            for key in optional_fields:
+                if key not in visit_data:
+                    # create the new tag and its value
+                    xml_elem = xmldoc.createElement(key)
+                    value    = xmldoc.createTextNode(" ")
+                    # append the child tag and the value to the 'Visit' tag
+                    visit.appendChild(xml_elem)
+                    xml_elem.appendChild(value)
 
         # Update the XML file with the correct values
         save_xmldoc()

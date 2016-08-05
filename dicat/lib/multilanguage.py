@@ -129,6 +129,8 @@ if language == "fr":
                                 u"requis!'"
     dialog_cancel = u"Vous êtes sur le point d'annuler l'édition des données " \
                     u"sans sauver!\n\nVoulez-vous continuer?"
+    dialog_delete = u"Vous êtes sur le point de suprimer la visite!\n\n" \
+                    u"Voulez-vous continuer?"
     ################  DATA WINDOW  ###################
     schedule_pane    = u"Calendrier"
     candidate_pane   = u"Candidat"
@@ -296,10 +298,11 @@ elif language == "en":
                                         u"'Lastname' and 'Date of Birth' " \
                                         u"fields are required!"
     dialog_missing_visit_info = u"'Visit label and Visit status are required!'"
-    dialog_visitLabel_exists  = u"Visit label already exists for " \
-                                u"candidate "
+    dialog_visitLabel_exists  = u"Visit label already exists for this candidate"
     dialog_cancel = u"You are about to cancel edition without saving!\n\n" \
                     u"Do you want to continue?"
+    dialog_delete = u"You are about to delete the visit!\n\n Do you want to " \
+                    u"continue?"
 
     ################  DATA WINDOW  ###################
     schedule_pane    = u"Calendar"

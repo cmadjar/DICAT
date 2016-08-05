@@ -83,7 +83,7 @@ class Visit():
             self.visitwithwhom = " "
 
 
-    def check_visit_data(self, candidate, visit=''):
+    def check_visit_data(self, candidate, visit='', new=False):
         """
         Check that the data entered in the data window for a given visit row is
         as expected. If not, will return an error message that can be displayed.
@@ -108,15 +108,13 @@ class Visit():
         # If visit is 'new', it means we are creating a new visit for that
         # candidate so we need to check if the VisitLabel entered is unique
         # for that specific candidate.
-        if visit == 'new' and self.visitlabel in visits_array:
-            message = DataManagement.dialog_visitLabel_exists + candidate
-            return message
+        if new and self.visitlabel in visits_array:
+            return MultiLanguage.dialog_visitLabel_exists
 
         # If visit date does not matches YYYY-MM-DD format, return an error.
         # (Error message is stored in MultiLanguage.dialog_bad_date_format)
         date_ok = Utilities.check_date_format(self.visitdate)
-        if not date_ok:
-            print "Hello"
+        if not date_ok and not self.visitdate == " ":
             return MultiLanguage.dialog_bad_date_format
 
         # If we get there, it means all the data is good so no message needs to

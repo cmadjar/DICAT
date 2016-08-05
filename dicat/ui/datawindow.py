@@ -255,13 +255,13 @@ class DataWindow(Toplevel):
         self.label_visit_label = Label(     # create visit label widget
             self.schedule_pane, text=MultiLanguage.col_visitlabel
         )
-        self.label_visit_date = Label(
+        self.label_visit_date = Label(      # create visit date widget
             self.schedule_pane, text=MultiLanguage.col_visitdate
         )
-        self.label_visit_startwhen = Label(      # create visit when widget
+        self.label_visit_startwhen = Label( # create visit start when widget
             self.schedule_pane, text=MultiLanguage.col_visitstartwhen
         )
-        self.label_visit_endwhen = Label(
+        self.label_visit_endwhen = Label(   # create visit end when widget
             self.schedule_pane, text=MultiLanguage.col_visitendwhen
         )
         self.label_visit_where = Label(     # create visit where widget
@@ -274,17 +274,18 @@ class DataWindow(Toplevel):
             self.schedule_pane, text=MultiLanguage.col_visitstatus
         )
 
+
         # Draw the top row (header) widgets
         self.label_visit_label.grid(        # draw visit label widget
             row=0, column=1, padx=10, pady=5, sticky=N+S+E+W
         )
-        self.label_visit_date.grid(
+        self.label_visit_date.grid(         # draw visit date widget
             row=0, column=2, padx=10, pady=5, sticky=N+S+E+W
         )
-        self.label_visit_startwhen.grid(         # draw visit when widget
+        self.label_visit_startwhen.grid(    # draw visit start when widget
             row=0, column=3, padx=10, pady=5, sticky=N+S+E+W
         )
-        self.label_visit_endwhen.grid(
+        self.label_visit_endwhen.grid(      # draw visit end when widget
             row=0, column=4, padx=10, pady=5, sticky=N+S+E+W
         )
         self.label_visit_where.grid(        # draw visit where widget
@@ -296,6 +297,15 @@ class DataWindow(Toplevel):
         self.label_visit_status.grid(       # draw visit status widget
             row=0, column=7, padx=10, pady=5, sticky=N+S+E+W
         )
+
+        # Render title row in BOLD
+        self.label_visit_label.config(font=('Helvetica', 14, 'italic'))
+        self.label_visit_date.config(font=('Helvetica', 14, 'italic'))
+        self.label_visit_startwhen.config(font=('Helvetica', 14, 'italic'))
+        self.label_visit_endwhen.config(font=('Helvetica', 14, 'italic'))
+        self.label_visit_where.config(font=('Helvetica', 14, 'italic'))
+        self.label_visit_withwhom.config(font=('Helvetica', 14, 'italic'))
+        self.label_visit_status.config(font=('Helvetica', 14, 'italic'))
 
         # Sort visit list based on the VisitDate field
         visit_list = DataManagement.sort_candidate_visit_list(visitset)
@@ -311,6 +321,7 @@ class DataWindow(Toplevel):
         self.text_visit_status_var    = []
         self.text_visit_withwhom_var  = []
         # Define text widget arrays to be displayed at row_nb
+        self.text_visit_label     = []
         self.text_visit_date      = []
         self.text_visit_startwhen = []
         self.text_visit_endwhen   = []
@@ -354,53 +365,11 @@ class DataWindow(Toplevel):
             if "VisitStatus" in visit.keys():
                 self.text_visit_status_var[row_nb].set(visit["VisitStatus"])
 
-            # Create the visit row widgets
-            label_visit_label= Label(
-                self.schedule_pane, text=self.text_visit_label_var[row_nb].get()
-            )
-            self.text_visit_date.append(      # visit date widget
-                Entry(
-                    self.schedule_pane,
-                    textvariable=self.text_visit_date_var[row_nb]
-                )
-            )
-            self.text_visit_startwhen.append( # visit start when widget
-                Combobox(
-                    self.schedule_pane,
-                    textvariable=self.text_visit_startwhen_var[row_nb],
-                    values=MultiLanguage.time_options,
-                    width=9
-                )
-            )
-            self.text_visit_endwhen.append(   # visit end when widget
-                Combobox(
-                    self.schedule_pane,
-                    textvariable=self.text_visit_endwhen_var[row_nb],
-                    values=MultiLanguage.time_options,
-                    width=9
-                )
-            )
-            self.text_visit_where.append(     # visit where widget
-                Entry(
-                    self.schedule_pane,
-                    textvariable=self.text_visit_where_var[row_nb]
-                )
-            )
-            self.text_visit_withwhom.append(  # visit with whom widget
-                Entry(
-                    self.schedule_pane,
-                    text=self.text_visit_withwhom_var[row_nb]
-                )
-            )
-            self.text_visit_status.append(    # visit status widget
-                Combobox(
-                    self.schedule_pane,
-                    textvariable=self.text_visit_status_var[row_nb],
-                    values=MultiLanguage.visit_status_options,
-                    width=10
-                )
-            )
+            # Create and draw the visit row widgets
+            self.draw_visit_row(row_nb)
+
             # Disable edition of Entry widgets
+            self.text_visit_label[row_nb].config(state=DISABLED)
             self.text_visit_date[row_nb].config(state=DISABLED)
             self.text_visit_startwhen[row_nb].config(state=DISABLED)
             self.text_visit_endwhen[row_nb].config(state=DISABLED)
@@ -408,82 +377,6 @@ class DataWindow(Toplevel):
             self.text_visit_status[row_nb].config(state=DISABLED)
             self.text_visit_withwhom[row_nb].config(state=DISABLED)
 
-            # Create edit and save button widgets
-            self.button_visit_edit.append(
-                Button(
-                    self.schedule_pane,
-                    text="Edit",
-                    width=5,
-                    command=lambda row_nb=row_nb: self.set_row_to_edit_mode(
-                        row_nb
-                    )
-                )
-            )
-            self.button_visit_save.append(
-                Button(
-                    self.schedule_pane,
-                    text="Save",
-                    width=5,
-                    command=lambda row_nb=row_nb: self.visit_save_action(
-                        row_nb
-                    )
-                )
-            )
-            self.button_visit_delete.append(
-                Button(
-                    self.schedule_pane,
-                    text='Delete',
-                    width=5,
-                    command=lambda row_nb=row_nb: self.visit_delete_action(
-                        row_nb
-                    )
-                )
-            )
-            self.button_visit_cancel.append(
-                Button(
-                    self.schedule_pane,
-                    text='Cancel',
-                    width=5,
-                    command=lambda row_nb=row_nb: self.visit_cancel_action(
-                        row_nb
-                    )
-                )
-            )
-
-            # Draw the visit row widget
-            label_visit_label.grid(
-                row=row_nb+1, column=1, padx=10, pady=5, sticky=N+S+E+W
-            )
-            self.text_visit_date[row_nb].grid(
-                row=row_nb+1, column=2, padx=10, pady=5, sticky=N+S+E+W
-            )
-            self.text_visit_startwhen[row_nb].grid(
-                row=row_nb+1, column=3, padx=10, pady=5, sticky=N+S+E+W
-            )
-            self.text_visit_endwhen[row_nb].grid(
-                row=row_nb+1, column=4, padx=10, pady=5, sticky=N+S+E+W
-            )
-            self.text_visit_where[row_nb].grid(
-                row=row_nb+1, column=5, padx=10, pady=5, sticky=N+S+E+W
-            )
-            self.text_visit_withwhom[row_nb].grid(
-                row=row_nb+1, column=6, padx=10, pady=5, sticky=N+S+E+W
-            )
-            self.text_visit_status[row_nb].grid(
-                row=row_nb+1, column=7, padx=10, pady=5, sticky=N+S+E+W
-            )
-            self.button_visit_edit[row_nb].grid(
-                row=row_nb+1, column=8, padx=5, pady=5, sticky=N+S+E+W
-            )
-            self.button_visit_save[row_nb].grid(
-                row=row_nb+1, column=8, padx=5, pady=5, sticky=N+S+E+W
-            )
-            self.button_visit_delete[row_nb].grid(
-                row=row_nb+1, column=9, padx=5, pady=5, sticky=N+S+E+W
-            )
-            self.button_visit_cancel[row_nb].grid(
-                row=row_nb+1, column=9, padx=5, pady=5, sticky=N+S+E+W
-            )
             # Display the edit and delete buttons on top
             self.button_visit_edit[row_nb].lift()
             self.button_visit_delete[row_nb].lift()
@@ -493,6 +386,17 @@ class DataWindow(Toplevel):
 
             # Increment row_nb for the next visit to be displayed
             row_nb += 1
+
+        # Create "Schedule a new visit" button and place it in the title row
+        self.button_new_visit = Button(     # creta new visit button widget
+            self.schedule_pane,
+            text='Schedule a new visit',
+            command=self.schedule_new_visit_action,
+            default=ACTIVE
+        )
+        self.button_new_visit.grid(         # draw new visit button widget
+            row=0, column=8, columnspan=2, padx=5, pady=5, sticky=N+S+E+W
+        )
 
 
     def load_data(self):
@@ -676,7 +580,7 @@ class DataWindow(Toplevel):
         DataManagement.save_candidate_data(cand_data)
 
 
-    def capture_visit_data(self, row_nb):
+    def capture_visit_data(self, row_nb, new=False):
 
         # Initialize the visit dictionary with new values
         visit_data = {}
@@ -713,7 +617,7 @@ class DataWindow(Toplevel):
         # Check fields format and required fields
         visit   = Visit(visit_data)
         message = visit.check_visit_data(
-            self.candidate, visit_data['VisitLabel']
+            self.candidate, visit_data['VisitLabel'], new
         )
         if message:
             return message
@@ -722,7 +626,7 @@ class DataWindow(Toplevel):
         DataManagement.save_visit_data(self.candidate, visit_data)
 
 
-    def visit_save_action(self, row_number):
+    def visit_save_action(self, row_number, new):
         """
         Actions to be performed when clicking on the save visit button.
           - Capture and save the visit data.
@@ -735,7 +639,7 @@ class DataWindow(Toplevel):
         """
 
         # Capture and save data entered
-        message = self.capture_visit_data(row_number)
+        message = self.capture_visit_data(row_number, new)
         if message:
             parent = Frame(self)
             newwin = DialogBox.ErrorMessage(parent, message)
@@ -746,19 +650,41 @@ class DataWindow(Toplevel):
         self.set_row_to_view_mode(row_number)
 
 
-    def visit_delete_action(self, row_number):
+    def visit_delete_action(self, row_nb):
         """
         Actions to be performed when hitting the delete button.
 
-        :param row_number: number of the row to be deleted
-         :type row_number: int
+        :param row_nb: number of the row to be deleted
+         :type row_nb: int
 
         """
 
-        #TODO: show warning before deleting
+        parent = Frame(self)
+        newwin = DialogBox.ConfirmYesNo(parent, MultiLanguage.dialog_delete)
+        if newwin.buttonvalue == 1:
 
-        #TODO: delete visit
-        pass
+            # Grep row to delete's visit label and store it in visit_data dict
+            visit_data = {}
+            visit_data['VisitLabel'] = self.text_visit_label_var[row_nb].get()
+
+            # Call save_visit_data with delete option = True to delete the visit
+            DataManagement.save_visit_data(self.candidate, visit_data, True)
+
+            # Destroy the visit row widget
+            self.text_visit_label[row_nb].destroy()
+            self.text_visit_date[row_nb].destroy()
+            self.text_visit_startwhen[row_nb].destroy()
+            self.text_visit_endwhen[row_nb].destroy()
+            self.text_visit_where[row_nb].destroy()
+            self.text_visit_withwhom[row_nb].destroy()
+            self.text_visit_status[row_nb].destroy()
+            self.button_visit_edit[row_nb].destroy()
+            self.button_visit_save[row_nb].destroy()
+            self.button_visit_delete[row_nb].destroy()
+            self.button_visit_cancel[row_nb].destroy()
+
+        else:
+            return
 
 
     def visit_cancel_action(self, row_number):
@@ -773,7 +699,6 @@ class DataWindow(Toplevel):
 
         """
 
-        #self.cancel_button()
         parent = Frame(self)
         newwin = DialogBox.ConfirmYesNo(parent, MultiLanguage.dialog_cancel)
         if newwin.buttonvalue == 1:
@@ -834,3 +759,163 @@ class DataWindow(Toplevel):
         # Display the save button on top of the edit button
         self.button_visit_save[row_number].lift()
         self.button_visit_cancel[row_number].lift()
+
+
+    def schedule_new_visit_action(self):
+
+        # Figure out the number of visit already displayed in candidate pane.
+        # This number will become to row_nb to use to display new visit widgets.
+        row_nb = len(self.text_visit_date)
+
+        # Add a new row with empty values and save and cancel button
+        self.text_visit_label_var.append(StringVar())
+        self.text_visit_date_var.append(StringVar())
+        self.text_visit_startwhen_var.append(StringVar())
+        self.text_visit_endwhen_var.append(StringVar())
+        self.text_visit_where_var.append(StringVar())
+        self.text_visit_status_var.append(StringVar())
+        self.text_visit_withwhom_var.append(StringVar())
+        self.draw_visit_row(row_nb, new=True)  # add a new row with empty values
+
+        # Enable the combox to be readonly (no possibility to enter values not
+        # in drop downs
+        self.text_visit_startwhen[row_nb].config(state='readonly')
+        self.text_visit_endwhen[row_nb].config(state='readonly')
+        self.text_visit_status[row_nb].config(state='readonly')
+
+        # Hide the edit and cancel button below the save & delete button
+        self.button_visit_edit[row_nb].lower()
+        self.button_visit_cancel[row_nb].lower()
+        # Display the save and delete button on top of the edit & cancel button
+        self.button_visit_save[row_nb].lift()
+        self.button_visit_delete[row_nb].lift()
+
+
+    def draw_visit_row(self, row_nb, new=False):
+
+        # Create the visit row widgets
+        self.text_visit_label.append(
+            Entry(
+                self.schedule_pane,
+                textvariable=self.text_visit_label_var[row_nb]
+            )
+        )
+        self.text_visit_date.append(      # visit date widget
+            Entry(
+                self.schedule_pane,
+                textvariable=self.text_visit_date_var[row_nb]
+            )
+        )
+        self.text_visit_startwhen.append( # visit start when widget
+            Combobox(
+                self.schedule_pane,
+                textvariable=self.text_visit_startwhen_var[row_nb],
+                values=MultiLanguage.time_options,
+                width=9
+            )
+        )
+        self.text_visit_endwhen.append(   # visit end when widget
+            Combobox(
+                self.schedule_pane,
+                textvariable=self.text_visit_endwhen_var[row_nb],
+                values=MultiLanguage.time_options,
+                width=9
+            )
+        )
+        self.text_visit_where.append(     # visit where widget
+            Entry(
+                self.schedule_pane,
+                textvariable=self.text_visit_where_var[row_nb]
+            )
+        )
+        self.text_visit_withwhom.append(  # visit with whom widget
+            Entry(
+                self.schedule_pane,
+                text=self.text_visit_withwhom_var[row_nb]
+            )
+        )
+        self.text_visit_status.append(    # visit status widget
+            Combobox(
+                self.schedule_pane,
+                textvariable=self.text_visit_status_var[row_nb],
+                values=MultiLanguage.visit_status_options,
+                width=10
+            )
+        )
+
+        # Create edit and save button widgets
+        self.button_visit_edit.append(
+            Button(
+                self.schedule_pane,
+                text="Edit",
+                width=5,
+                command=lambda row_nb=row_nb: self.set_row_to_edit_mode(
+                    row_nb
+                )
+            )
+        )
+        self.button_visit_save.append(
+            Button(
+                self.schedule_pane,
+                text="Save",
+                width=5,
+                command=lambda row_nb=row_nb: self.visit_save_action(
+                    row_nb, new
+                )
+            )
+        )
+        self.button_visit_delete.append(
+            Button(
+                self.schedule_pane,
+                text='Delete',
+                width=5,
+                command=lambda row_nb=row_nb: self.visit_delete_action(
+                    row_nb
+                )
+            )
+        )
+        self.button_visit_cancel.append(
+            Button(
+                self.schedule_pane,
+                text='Cancel',
+                width=5,
+                command=lambda row_nb=row_nb: self.visit_cancel_action(
+                    row_nb
+                )
+            )
+        )
+
+        # Draw the visit row widget
+        self.text_visit_label[row_nb].grid(
+            row=row_nb+1, column=1, padx=10, pady=5, sticky=N+S+E+W
+        )
+        self.text_visit_date[row_nb].grid(
+            row=row_nb+1, column=2, padx=10, pady=5, sticky=N+S+E+W
+        )
+        self.text_visit_startwhen[row_nb].grid(
+            row=row_nb+1, column=3, padx=10, pady=5, sticky=N+S+E+W
+        )
+        self.text_visit_endwhen[row_nb].grid(
+            row=row_nb+1, column=4, padx=10, pady=5, sticky=N+S+E+W
+        )
+        self.text_visit_where[row_nb].grid(
+            row=row_nb+1, column=5, padx=10, pady=5, sticky=N+S+E+W
+        )
+        self.text_visit_withwhom[row_nb].grid(
+            row=row_nb+1, column=6, padx=10, pady=5, sticky=N+S+E+W
+        )
+        self.text_visit_status[row_nb].grid(
+            row=row_nb+1, column=7, padx=10, pady=5, sticky=N+S+E+W
+        )
+        self.button_visit_edit[row_nb].grid(
+            row=row_nb+1, column=8, padx=5, pady=5, sticky=N+S+E+W
+        )
+        self.button_visit_save[row_nb].grid(
+            row=row_nb+1, column=8, padx=5, pady=5, sticky=N+S+E+W
+        )
+        self.button_visit_delete[row_nb].grid(
+            row=row_nb+1, column=9, padx=5, pady=5, sticky=N+S+E+W
+        )
+        self.button_visit_cancel[row_nb].grid(
+            row=row_nb+1, column=9, padx=5, pady=5, sticky=N+S+E+W
+        )
