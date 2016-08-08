@@ -1,4 +1,5 @@
 #imports from standard packages
+import re
 from uuid import uuid1
 import time, datetime
 
@@ -124,8 +125,48 @@ def check_date_format(date):
         return False
 
 
+def dict_match(pattern, data_dict):
+    """
+    Function that will return True if the pattern was matching one value of the
+    data dictionary (data_dict). False otherwise.
+
+    :param pattern:   pattern to be used in the regular expression
+     :type pattern:   str
+    :param data_dict: data dictionary to look for matches
+     :type data_dict: dict
+
+    :return: True if found a match, False otherwise
+     :rtype: bool
+
+    """
+
+    for key in data_dict:
+        if re.search(pattern, data_dict[key], re.IGNORECASE):
+            return True
+
+    return False
 
 
+def array_match(pattern, data_array):
+    """
+    Function that will return True if the pattern was matching one value of the
+    data array/list (data_array). False otherwise.
+
+    :param pattern:    pattern to be used in the regular expression
+     :type pattern:    str
+    :param data_array: data array to look for matches
+     :type data_array: list
+
+    :return: True if found a match, False otherwise
+     :rtype: bool
+
+    """
+
+    for value in data_array:
+        if re.search(pattern, value, re.IGNORECASE):
+            return True
+
+    return False
 
 
 # self-test "module"  TODO remove before release
@@ -133,3 +174,5 @@ if __name__ == '__main__':
     import lib.datamanagement as DataManagement
     data=dict(DataManagement.read_study_data())
     print_object(data)
+
+

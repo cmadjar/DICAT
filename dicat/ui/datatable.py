@@ -5,6 +5,7 @@ from ttk import *
 # import internal packages
 import ui.datawindow as DataWindow
 import lib.datamanagement as DataManagement
+import lib.utilities as Utilities
 
 class DataTable(Frame):
     """
@@ -229,7 +230,7 @@ class ParticipantsList(DataTable):
                 #     - True if found a match,
                 #     - False otherwise
                 if pattern and \
-                        not DataManagement.dict_match(pattern, cand_data[key]):
+                        not Utilities.dict_match(pattern, cand_data[key]):
                     continue   # continue to the following candidate
 
                 # Populate the matching_cand dictionary with the candidate info
@@ -386,7 +387,7 @@ class VisitList(DataTable):
                             # DataManagement.array_match function will return:
                             #     - True if found a match,
                             #     - False otherwise
-                            if pattern and not DataManagement.array_match(
+                            if pattern and not Utilities.array_match(
                                     pattern, row_values
                             ):
                                 continue   # continue to next visit
