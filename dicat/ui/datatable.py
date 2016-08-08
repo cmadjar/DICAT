@@ -226,7 +226,7 @@ class ParticipantsList(DataTable):
             for key in cand_data:
 
                 # If pattern, check if found its match in cand_data[key] dict
-                # DataManagement.dict_match function will return:
+                # Utilities.dict_match function will return:
                 #     - True if found a match,
                 #     - False otherwise
                 if pattern and \
@@ -384,7 +384,7 @@ class VisitList(DataTable):
 
                             # If pattern, check if found its match in row_values
                             # array.
-                            # DataManagement.array_match function will return:
+                            # Utilities.array_match function will return:
                             #     - True if found a match,
                             #     - False otherwise
                             if pattern and not Utilities.array_match(
